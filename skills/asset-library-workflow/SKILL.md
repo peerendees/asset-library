@@ -25,6 +25,70 @@ zugehörigen Dateien und bereitet sie für GitHub vor.
 
 ---
 
+## Erstinstallation (Einmalig)
+
+Dieser Abschnitt gilt für alle, die die Asset Library neu aufsetzen.
+Wer die Library bereits nutzt, kann direkt zu "Workflow" springen.
+
+### A) Notion Container-Seite anlegen
+
+```
+notion_create_pages(
+    pages=[{
+        "properties": {"title": "🗂️ Asset Library"},
+        "content": "Zentrale Bibliothek für Skills, Templates, Scripts und andere Assets."
+    }]
+)
+```
+
+Die zurückgegebene page_id notieren – sie wird als parent für die Datenbank benötigt.
+
+### B) Notion Datenbank anlegen
+
+```
+notion_create_database(
+    parent={"page_id": "<container_page_id>"},
+    title="Assets",
+    schema="""CREATE TABLE (
+        "Name" TITLE,
+        "Typ" SELECT('Skill':blue, 'Template':green, 'Script':orange, 'Config':yellow, 'Sonstiges':gray),
+        "Kurzinfo" RICH_TEXT,
+        "Status" SELECT('Draft':gray, 'Ready':green, 'Deprecated':red),
+        "Version" RICH_TEXT,
+        "Tags" MULTI_SELECT('Slack':blue, 'Notion':red, 'Automation':orange, 'Claude':purple, 'MCP':green, 'n8n':yellow),
+        "Lieferformat" SELECT('Copy-Paste':yellow, 'GitHub Download':blue, 'Beides':green),
+        "GitHub URL" URL,
+        "Kompatibilitaet" RICH_TEXT,
+        "Oeffentlich" CHECKBOX,
+        "Erstellt am" CREATED_TIME,
+        "Zuletzt aktualisiert" LAST_EDITED_TIME
+    )"""
+)
+```
+
+Die zurückgegebene data_source_id notieren – sie ersetzt überall in dieser SKILL.md
+den Platzhalter ec790d33-f7c9-4ff2-93a0-a3f03e4b0bc0.
+
+### C) GitHub Repository anlegen
+
+1. Neues Repository auf github.com erstellen (z.B. "asset-library")
+2. Lokal klonen: git clone https://github.com/<username>/<repo>.git
+3. Folgende Ordnerstruktur anlegen:
+   mkdir -p skills templates scripts configs
+4. Ersten Commit pushen:
+   git add . && git commit -m "Initial structure" && git push
+
+Die GitHub-Repository-URL überall in dieser SKILL.md anpassen.
+
+### D) SKILL.md anpassen
+
+Nach der Erstinstallation die folgenden Werte in dieser Datei ersetzen:
+- ec790d33-f7c9-4ff2-93a0-a3f03e4b0bc0 → eigene data_source_id
+- 31931cc6-fd56-81eb-a8c7-c014ad4fb902 → eigene Container-Seiten-ID
+- https://github.com/peerendees/asset-library → eigene GitHub-Repository-URL
+
+---
+
 ## Workflow
 
 ### Schritt 1: Asset-Typ bestimmen
@@ -84,6 +148,19 @@ Jeder Eintrag folgt diesem Aufbau:
 ```
 ## 📋 Überblick
 <Ausführliche Beschreibung, Anwendungsfälle>
+
+---
+
+## 🎯 Aktivierung – So rufst du den Skill auf
+
+Sobald der Skill installiert ist, wird er durch folgende Formulierungen aktiviert:
+
+- „<Trigger-Formulierung 1>"
+- „<Trigger-Formulierung 2>"
+- „<Trigger-Formulierung 3>"
+- ...
+
+Der Skill erkennt diese Formulierungen automatisch – kein spezieller Befehl nötig.
 
 ---
 
