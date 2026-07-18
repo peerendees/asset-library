@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-18 · v1.1 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-18 · v1.2 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 
 ---
@@ -79,6 +79,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 | `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
+| `BEIRAT_VAULT_TOKEN` (GitHub PAT, contents:write nur auf berent-2nd-brain) | n8n-Container-Env + Passwortmanager | Beirat-Vault-Export (Sitzungen -> 04 Ressourcen/Beirat/) |
 
 **Bekannte Altlast (offen):** n8n-Config-Datei auf dem VPS enthält einen VERALTETEN
 `DECRYPT_API_TOKEN`-Wert — vor jedem Container-Neustart auf den Live-Wert korrigieren
@@ -109,3 +110,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 |---|---|
 | 2026-07-13 | v1.0 — Erstfassung aus der Umbau-Session 11.–13.07. (KI-Betriebssystem, Mail-Pipeline, SSO) |
 | 2026-07-18 | v1.1 — Beirat-Orchestrator (beirat_sessions/beitraege, eigener `BEIRAT_ANTHROPIC_KEY`, service-Key als n8n-Container-Env); veralteten lokalen service-Key dokumentiert. |
+| 2026-07-18 | v1.2 — Beirat v2 (Arena-Loop, Boards, Nachdebatte, Vault-Export): neues Secret BEIRAT_VAULT_TOKEN; Beirat-Projekt nach /Users/Shared/Projekte/.../beirat + Repo peerendees/beirat. |
