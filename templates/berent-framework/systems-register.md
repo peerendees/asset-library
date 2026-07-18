@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-18 · v1.2 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-18 · v1.3 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 
 ---
@@ -22,7 +22,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 
 ### A1 · Supabase `berent-os` — KI-Betriebssystem
 - Ref `umbuggxvbluxbejdekvd`, eu-west-1. Tabellen: skills (21), categories (8), context_sources,
-  mails, executions, feedback, governance, auth_credentials, beirat_sessions, beirat_beitraege.
+  mails (+mail_actions, +verwertung/ablage), executions, feedback, governance, auth_credentials, beirat_sessions, beirat_beitraege, beirat_koepfe, beirat_boards.
 - Zugriff: anon (nur skills/categories/context/executions per Policy) · service_role (mails,
   auth_credentials — keine anon-Policies).
 - Konsumenten: n8n (Executor, Ingestion, Durchsicht), NR7, Claude-Code-Sessions (MCP).
@@ -36,7 +36,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 - Produktions-Workflows: BelegChat mit Threema Beleg-Eingang · Hedy Transkripte v2 · fonio-Strecken.
 - KI-Betriebssystem: BERENT Skill Executor (`suljizPHm2nCwXCl`) · Mail Ingestion iCloud
   (`vVrsTjy1MrkcAtqa`) · Mail Ingestion IONOS (`8kLtEouNotJql2Wh`) · Postfach-Durchsicht
-  (`nBmkteHSFECAOlOA`, Schedule 03:00 + Webhook) · Beirat-Orchestrator (Webhook `berent-beirat-orchestrator-7f2e9c1a`, 4 Modi, self-contained via `$env`).
+  (`nBmkteHSFECAOlOA`, Schedule 03:00 + Webhook) · Beirat-Orchestrator (Webhook `berent-beirat-orchestrator-7f2e9c1a`, 4 Modi, self-contained via `$env`). Mail-Erinnerung (`RpWJ75O9xM9FjUmQ`, Cron 07:00+17:30) · Rechnungs-Alarm (`vqPe0T1NatkRqSRH`, stuendlich).
 - April-Strecke „BERENT AI Mail" (Webhook-Live-Abruf für Lovable-App) — parallel, kein Konflikt.
 
 ### A4 · Vercel (peerendees-projects)
@@ -111,3 +111,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-13 | v1.0 — Erstfassung aus der Umbau-Session 11.–13.07. (KI-Betriebssystem, Mail-Pipeline, SSO) |
 | 2026-07-18 | v1.1 — Beirat-Orchestrator (beirat_sessions/beitraege, eigener `BEIRAT_ANTHROPIC_KEY`, service-Key als n8n-Container-Env); veralteten lokalen service-Key dokumentiert. |
 | 2026-07-18 | v1.2 — Beirat v2 (Arena-Loop, Boards, Nachdebatte, Vault-Export): neues Secret BEIRAT_VAULT_TOKEN; Beirat-Projekt nach /Users/Shared/Projekte/.../beirat + Repo peerendees/beirat. |
+| 2026-07-18 | v1.3 — Mail-Automatisierung (Erinnerung 07:00/17:30, stuendl. Rechnungs-Alarm; kein neues Secret) + Triage-Erweiterung (mail_actions, verwertung/ablage). |
