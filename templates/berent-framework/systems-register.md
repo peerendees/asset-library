@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-18 · v1.3 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-18 · v1.4 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 
 ---
@@ -36,7 +36,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 - Produktions-Workflows: BelegChat mit Threema Beleg-Eingang · Hedy Transkripte v2 · fonio-Strecken.
 - KI-Betriebssystem: BERENT Skill Executor (`suljizPHm2nCwXCl`) · Mail Ingestion iCloud
   (`vVrsTjy1MrkcAtqa`) · Mail Ingestion IONOS (`8kLtEouNotJql2Wh`) · Postfach-Durchsicht
-  (`nBmkteHSFECAOlOA`, Schedule 03:00 + Webhook) · Beirat-Orchestrator (Webhook `berent-beirat-orchestrator-7f2e9c1a`, 4 Modi, self-contained via `$env`). Mail-Erinnerung (`RpWJ75O9xM9FjUmQ`, Cron 07:00+17:30) · Rechnungs-Alarm (`vqPe0T1NatkRqSRH`, stuendlich).
+  (`nBmkteHSFECAOlOA`, Schedule 03:00 + Webhook) · Beirat-Orchestrator (Webhook `berent-beirat-orchestrator-7f2e9c1a`, 4 Modi, self-contained via `$env`). Mail-Erinnerung (`RpWJ75O9xM9FjUmQ`, Cron 07:00+17:30) · Rechnungs-Alarm (`vqPe0T1NatkRqSRH`, stuendlich). Aufraeum-Executor (`hBQmwkRg7QeZbAtB`, IMAP-Move, INAKTIV bis Creds+Dry-Run).
 - April-Strecke „BERENT AI Mail" (Webhook-Live-Abruf für Lovable-App) — parallel, kein Konflikt.
 
 ### A4 · Vercel (peerendees-projects)
@@ -75,7 +75,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 | berent-os service (`sb_secret_…`) | ① n8n-Credential „BERENT-OS Supabase" ② nr7/.env.local ③ Vercel nr7 Env `SUPABASE_BERENT_OS_SERVICE_KEY` ④ Passwortmanager ⑤ n8n-Container-Env `SUPABASE_BERENT_OS_SERVICE_KEY` (Beirat) | Ingestion/Durchsicht-Writes, NR7 mails+auth, Export-Script, Beirat-Orchestrator |
 | `AUTH_SESSION_SECRET` (NR7) | ① Vercel nr7 Env ② nr7/.env.local (lokaler Eigenwert) | NR7 SSO (Session/Challenge-JWTs) |
 | Threema-Secrets (*BERENT1/2, Private Key) | Vercel threema-decrypt Env (`THREEMA_SECRET_BERENT1`, `THREEMA_GATEWAY_ID_BASIC`, `THREEMA_PRIVATE_KEY`, …) — Gateway-Portal ist die Quelle | Vercel-Function send_simple/decrypt |
-| IMAP-Credentials (iCloud, IONOS) | nur n8n-Credential-Store | Ingestion-Trigger |
+| IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
 | `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
@@ -112,3 +112,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-18 | v1.1 — Beirat-Orchestrator (beirat_sessions/beitraege, eigener `BEIRAT_ANTHROPIC_KEY`, service-Key als n8n-Container-Env); veralteten lokalen service-Key dokumentiert. |
 | 2026-07-18 | v1.2 — Beirat v2 (Arena-Loop, Boards, Nachdebatte, Vault-Export): neues Secret BEIRAT_VAULT_TOKEN; Beirat-Projekt nach /Users/Shared/Projekte/.../beirat + Repo peerendees/beirat. |
 | 2026-07-18 | v1.3 — Mail-Automatisierung (Erinnerung 07:00/17:30, stuendl. Rechnungs-Alarm; kein neues Secret) + Triage-Erweiterung (mail_actions, verwertung/ablage). |
+| 2026-07-19 | v1.4 — Aufraeum-Executor (IMAP-Move via imapflow im Code-Node): IMAP-Creds als Container-Env noetig, AUFRAEUM_LIVE-Schalter, inaktiv bis Dry-Run. |
