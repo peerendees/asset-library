@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-18 · v1.4 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-18 · v1.5 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 
 ---
@@ -46,6 +46,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 ### A5 · Threema Gateway
 - `*BERENT1` (Basic): send_simple-Versand an Marcus (BUMFMZ39). Guthaben im Gateway-Portal prüfen.
 - `*BERENT2` (E2E): Callback zeigt auf BelegChat-Webhook — Umstellung nur mit bewusster Entscheidung.
+- `*BERENTB` (E2E): Beirat-Bot. Callback -> `threema-decrypt.vercel.app/api/beirat-callback` -> n8n-Beirat-Webhook. Syntax `/beirat <board> [modus] <frage>`.
 
 ### A6 · Mail-Konten
 - **iCloud** (imap.mail.me.com:993, App-Passwort) — Ingestion live, Bestand 2026 komplett.
@@ -74,6 +75,7 @@ Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀─
 | berent-os anon (`sb_publishable_…`/Legacy) | ① n8n-Credential „berent-os Supabase (anon)" ② nr7/.env.local ③ Vercel nr7 Env `SUPABASE_BERENT_OS_KEY` | Executor Skills/Kontext, NR7 skills/team |
 | berent-os service (`sb_secret_…`) | ① n8n-Credential „BERENT-OS Supabase" ② nr7/.env.local ③ Vercel nr7 Env `SUPABASE_BERENT_OS_SERVICE_KEY` ④ Passwortmanager ⑤ n8n-Container-Env `SUPABASE_BERENT_OS_SERVICE_KEY` (Beirat) | Ingestion/Durchsicht-Writes, NR7 mails+auth, Export-Script, Beirat-Orchestrator |
 | `AUTH_SESSION_SECRET` (NR7) | ① Vercel nr7 Env ② nr7/.env.local (lokaler Eigenwert) | NR7 SSO (Session/Challenge-JWTs) |
+| Threema-Bot Beirat (*BERENTB, E2E) | Vercel threema-decrypt Env: `THREEMA_GATEWAY_ID_BEIRAT`, `THREEMA_SECRET_BERENTB`, `THREEMA_PRIVATE_KEY_BEIRAT` (Private Key auch im Passwortmanager) | Callback `/api/beirat-callback` (empfaengt) + `send_beirat`-Action (antwortet) |
 | Threema-Secrets (*BERENT1/2, Private Key) | Vercel threema-decrypt Env (`THREEMA_SECRET_BERENT1`, `THREEMA_GATEWAY_ID_BASIC`, `THREEMA_PRIVATE_KEY`, …) — Gateway-Portal ist die Quelle | Vercel-Function send_simple/decrypt |
 | IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
 | `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
@@ -113,3 +115,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-18 | v1.2 — Beirat v2 (Arena-Loop, Boards, Nachdebatte, Vault-Export): neues Secret BEIRAT_VAULT_TOKEN; Beirat-Projekt nach /Users/Shared/Projekte/.../beirat + Repo peerendees/beirat. |
 | 2026-07-18 | v1.3 — Mail-Automatisierung (Erinnerung 07:00/17:30, stuendl. Rechnungs-Alarm; kein neues Secret) + Triage-Erweiterung (mail_actions, verwertung/ablage). |
 | 2026-07-19 | v1.4 — Aufraeum-Executor (IMAP-Move via imapflow im Code-Node): IMAP-Creds als Container-Env noetig, AUFRAEUM_LIVE-Schalter, inaktiv bis Dry-Run. |
+| 2026-07-19 | v1.5 — Threema-Beirat-Bot *BERENTB (E2E): Callback-Empfaenger + send_beirat in threema-decrypt; neue Secrets THREEMA_*_BEIRAT/BERENTB. |
