@@ -136,6 +136,18 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 `DECRYPT_API_TOKEN`-Wert — vor jedem Container-Neustart auf den Live-Wert korrigieren
 (Fingerprint-Vergleich mit Passwortmanager).
 
+**Lehre (29.07.2026, CalDAV-Anbindung) — neue Container-Env-Variablen wirksam machen:** Eine
+neue Env-Variable für n8n auf dem Hostinger-VPS wirkt NUR, wenn sie im **`environment:`-Block**
+der `/root/docker-compose.yml` einzeln gelistet ist (`- NAME=${NAME}`) UND der Container mit
+`docker compose up -d --force-recreate` **neu erstellt** wird. Drei Fallen, die 28./29.07. je einen
+Testlauf gekostet haben: (a) ein Eintrag nur in `/root/.env` reicht nicht — der wird für die
+`${…}`-Substitution gelesen, aber nicht in den Container injiziert; (b) `restart` bzw. ein
+VPS-Reboot lädt neue `environment:`-Einträge nicht nach (der laufende Prozess friert seine Umgebung
+beim Start ein); (c) `docker exec printenv` zeigt die Variable evtl. trotzdem — das ist die
+Shell-Sicht, nicht die des n8n-Prozesses. Symptom: `$env.X` im Code-Knoten leer, obwohl printenv sie
+zeigt. Gegenprobe: eine funktionierende Referenzvariable wie `BEIRAT_VAULT_TOKEN` steht korrekt im
+Block; die neue muss genauso dort stehen.
+
 **Bekannte Altlast (18.07.2026, Stand 28.07.):** `nr7/.env.local` existiert lokal NICHT mehr — die unten genannten Speicherort-Listen sind entsprechend zu lesen (Live-Werte: Passwortmanager/Vercel). Ursprünglich: `nr7/.env.local` trug einen VERALTETEN berent-os service-Key (401 gegen die REST-API); Live-Wert liegt in Passwortmanager/Vercel. Vor Nutzung (auch fuer die n8n-Container-Env des Beirats) alle Orte per Fingerprint abgleichen.
 
 ---
