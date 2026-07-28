@@ -1,13 +1,15 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-28 · v1.6 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-28 · v1.7 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
 > Spiegel (z. B. `beirat/framework/`) werden nach jeder Änderung nachgezogen, nie direkt editiert.
 > Anlass: Am 27./28.07.2026 liefen SSoT (v1.5) und Beirat-Spiegel (v1.1 + neuere Inhalte) in
-> BEIDE Richtungen auseinander, gepflegt aus zwei parallelen Chats.
+> BEIDE Richtungen auseinander, gepflegt aus zwei parallelen Chats. v1.7 holt zusaetzlich den
+> Kalender-Stand zurueck (A10 + iCloud-CalDAV, Spiegel-Zweig v1.2), den v1.6 versehentlich
+> ueberschrieben hatte — bei Zusammenfuehrungen faellt der juengere von zwei Staenden still heraus.
 
 ---
 
@@ -20,6 +22,7 @@ Mail (iCloud, IONOS, HPCN*, Proton*) ──IMAP──▶ n8n Ingestion ──▶
 berent-os (Skills/Kontext/Mails/Executions) ◀──▶ n8n Skill Executor ◀──▶ Anthropic API
 NR7 (nr7.berent.ai, Passkey-SSO) ──service_role──▶ berent-os (Dashboard, Freigaben)
 Obsidian-Vault ◀──Extrakt-Export──── berent-os · Vault-Git ◀──▶ GitHub
+Threema (*BERENTB, E2E) ◀──send_beirat──▶ Vercel threema-decrypt (beirat-callback) ◀──▶ n8n Beirat-Orchestrator
 Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──▶ Vault-Repo ──Obsidian-Git-Pull──▶ Vault
                                                         (* = geplant)
 ```
@@ -73,6 +76,22 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 - Vault `~/BERENT-2nd-Brain` (Git, Auto-Backup) · Notion (Asset Library
   data_source `ec790d33-f7c9-4ff2-93a0-a3f03e4b0bc0`) · Linear (Backlog).
 
+### A10 · Kalender (iCloud/CalDAV)
+- Konto `freesolo.23@me.com` (Apple-ID), Principal `156820395`, Endpunkt `https://caldav.icloud.com`
+  (Discovery per PROPFIND, Apple leitet auf `pNN-caldav.icloud.com` um). Anwendungsspezifisches
+  Kennwort — 2FA-Konto, normales Apple-Kennwort funktioniert nicht.
+- Zielkalender: „Donna" (`DE27C041-…`) für Neues von Donna · „BERENT Sprechzeiten" (`0916646E-…`)
+  für den blockenden Zwilling · „Tagesplan" (`AFC93821-…`) gehört der Tagesplanung, kein Schreibzugriff.
+- Bestehende Termine werden UID-genau am Fundort geändert, nie verschoben.
+- Zugang: n8n-Credential `iCloud CalDAV` (Basic Auth: Apple-ID + anwendungsspezifisches Kennwort).
+  Eigenes Kennwort, getrennt vom IMAP-Kennwort (`IMAP account`) — geteilte Werte koppeln die Rotation.
+- Am selben Principal hängen die iCloud-Erinnerungslisten (`VTODO`): HerrQ, Privat, Bank,
+  Allgemein, Tagesaufgabe. Ob Apples CalDAV-Endpunkt sie ausliefert, ist ungeprüft
+  (Reminders-Formatwechsel ab iOS 13) — Donna schreibt dorthin vorerst nicht.
+- Konsumenten: n8n Kalender-Executor (geplant, KAL-P1). Fantastical ist nur Anzeige, keine API.
+- Nicht angebunden: HPCN (Exchange) — Frei/Belegt dort ungeprüft. Fantastical Openings
+  (Flexibits, `office@berent.ai`) hat keine offene Schnittstelle; Sprechzeiten-Regeln nur gespiegelt.
+
 ---
 
 ## SECRET-VERZEICHNIS — ein Label, alle Speicherorte
@@ -98,6 +117,7 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | Threema-Bot Beirat (`*BERENTB`, E2E) | ① Vercel threema-decrypt Env: `THREEMA_GATEWAY_ID_BERENTB`, `THREEMA_SECRET_BERENTB`, `THREEMA_PRIVATE_KEY_BERENTB` (Private Key auch im Passwortmanager) ② Gateway-Portal (Quelle + Callback-URL `https://threema-decrypt.vercel.app/api/beirat-callback`) | Callback `/api/beirat-callback` (empfängt, routet `/beirat` + `idee`) · `send_beirat` (antwortet) — **Namen einheitlich `_BERENTB` seit 27.07.** (vorher gemischt `_BEIRAT`; alte Namen sind TOT) |
 | Threema-Secrets (*BERENT1/2, Private Key) | Vercel threema-decrypt Env (`THREEMA_SECRET_BERENT1`, `THREEMA_GATEWAY_ID_BASIC`, `THREEMA_PRIVATE_KEY`, …) — Gateway-Portal ist die Quelle | Vercel-Function send_simple/decrypt |
 | IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
+| iCloud CalDAV (n8n-Credential `iCloud CalDAV`, Typ Basic Auth) | ① n8n-Credential-Store ② Passwortmanager | Kalender-Executor (Erinnerungen, Terminvorschläge) |
 | `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
@@ -139,3 +159,5 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-19 | v1.4 — Aufraeum-Executor (IMAP-Move via imapflow im Code-Node): IMAP-Creds als Container-Env noetig, AUFRAEUM_LIVE-Schalter, inaktiv bis Dry-Run. |
 | 2026-07-19 | v1.5 — Threema-Beirat-Bot *BERENTB (E2E): Callback-Empfaenger + send_beirat in threema-decrypt; neue Secrets THREEMA_*_BEIRAT/BERENTB. |
 | 2026-07-28 | v1.6 — Zusammenführung zweier auseinandergelaufener Fassungen (SSoT v1.5 + Beirat-Spiegel): SSoT-Regel im Kopf; idee-Datenfluss (Threema→Vault); *BERENTB-Router/Allowlist/Sendesperre; Env-Namen `_BERENTB` korrigiert; `VAULT_GITHUB_TOKEN`-Warnung; Linear-Keys; Ingo als Token-Verantwortlicher; Skill Executor `suljizPHm2nCwXCl` jetzt 19 Nodes (idee-Zweig + Kanal-Antwort). |
+| 2026-07-27 | v1.2 (Spiegel-Zweig) — iCloud/CalDAV als Kalender-Zugang (A10) und zugehoeriges Credential aufgenommen; Donna-Kalender angelegt. |
+| 2026-07-28 | v1.7 — A10 (Kalender iCloud/CalDAV) und die CalDAV-Credential-Zeile aus dem Spiegel-Zweig v1.2 zurueckgeholt; bei der v1.6-Zusammenfuehrung verloren gegangen. |
