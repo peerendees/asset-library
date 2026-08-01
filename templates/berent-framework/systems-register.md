@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-28 · v1.7 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-07-28 · v1.8 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -83,8 +83,14 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 - Zielkalender: „Donna" (`DE27C041-…`) für Neues von Donna · „BERENT Sprechzeiten" (`0916646E-…`)
   für den blockenden Zwilling · „Tagesplan" (`AFC93821-…`) gehört der Tagesplanung, kein Schreibzugriff.
 - Bestehende Termine werden UID-genau am Fundort geändert, nie verschoben.
-- Zugang: n8n-Credential `iCloud CalDAV` (Basic Auth: Apple-ID + anwendungsspezifisches Kennwort).
-  Eigenes Kennwort, getrennt vom IMAP-Kennwort (`IMAP account`) — geteilte Werte koppeln die Rotation.
+- Zugang: **Container-Env** `ICLOUD_CALDAV_USER` (Apple-ID) + `ICLOUD_CALDAV_APP_PASSWORD`
+  (anwendungsspezifisches Kennwort). Der Kalender-Executor spricht CalDAV aus einem **Code-Knoten**
+  (`https.request`, wie „Idee im Vault ablegen") — ein Code-Knoten kommt nicht an den
+  Credential-Store, deshalb `$env` statt Credential (Entscheidung 28.07., Plan-PR KAL-P1: der
+  HTTP-Request-Knoten hätte für den `text/calendar`-Roh-Body keine erprobte Vorlage). Eigenes
+  Kennwort, getrennt vom IMAP-Kennwort (`IMAP account`) — geteilte Werte koppeln die Rotation.
+  Das ungenutzte n8n-Credential `iCloud CalDAV` bleibt liegen (evtl. KAL-P4, falls `REPORT` über
+  den HTTP-Knoten geht).
 - Am selben Principal hängen die iCloud-Erinnerungslisten (`VTODO`): HerrQ, Privat, Bank,
   Allgemein, Tagesaufgabe. Ob Apples CalDAV-Endpunkt sie ausliefert, ist ungeprüft
   (Reminders-Formatwechsel ab iOS 13) — Donna schreibt dorthin vorerst nicht.
@@ -117,7 +123,8 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | Threema-Bot Beirat (`*BERENTB`, E2E) | ① Vercel threema-decrypt Env: `THREEMA_GATEWAY_ID_BERENTB`, `THREEMA_SECRET_BERENTB`, `THREEMA_PRIVATE_KEY_BERENTB` (Private Key auch im Passwortmanager) ② Gateway-Portal (Quelle + Callback-URL `https://threema-decrypt.vercel.app/api/beirat-callback`) | Callback `/api/beirat-callback` (empfängt, routet `/beirat` + `idee`) · `send_beirat` (antwortet) — **Namen einheitlich `_BERENTB` seit 27.07.** (vorher gemischt `_BEIRAT`; alte Namen sind TOT) |
 | Threema-Secrets (*BERENT1/2, Private Key) | Vercel threema-decrypt Env (`THREEMA_SECRET_BERENT1`, `THREEMA_GATEWAY_ID_BASIC`, `THREEMA_PRIVATE_KEY`, …) — Gateway-Portal ist die Quelle | Vercel-Function send_simple/decrypt |
 | IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
-| iCloud CalDAV (n8n-Credential `iCloud CalDAV`, Typ Basic Auth) | ① n8n-Credential-Store ② Passwortmanager | Kalender-Executor (Erinnerungen, Terminvorschläge) |
+| `ICLOUD_CALDAV_USER` + `ICLOUD_CALDAV_APP_PASSWORD` (iCloud CalDAV) | ① n8n-Container-Env ② Passwortmanager | Kalender-Executor (`$env`, Code-Knoten) |
+| ~~n8n-Credential `iCloud CalDAV` (Basic Auth)~~ | n8n-Credential-Store — **angelegt, aber ungenutzt** seit 28.07. | reserviert für KAL-P4 (HTTP-Knoten, falls `REPORT` dort geht) |
 | `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
@@ -128,6 +135,18 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 **Bekannte Altlast (offen):** n8n-Config-Datei auf dem VPS enthält einen VERALTETEN
 `DECRYPT_API_TOKEN`-Wert — vor jedem Container-Neustart auf den Live-Wert korrigieren
 (Fingerprint-Vergleich mit Passwortmanager).
+
+**Lehre (29.07.2026, CalDAV-Anbindung) — neue Container-Env-Variablen wirksam machen:** Eine
+neue Env-Variable für n8n auf dem Hostinger-VPS wirkt NUR, wenn sie im **`environment:`-Block**
+der `/root/docker-compose.yml` einzeln gelistet ist (`- NAME=${NAME}`) UND der Container mit
+`docker compose up -d --force-recreate` **neu erstellt** wird. Drei Fallen, die 28./29.07. je einen
+Testlauf gekostet haben: (a) ein Eintrag nur in `/root/.env` reicht nicht — der wird für die
+`${…}`-Substitution gelesen, aber nicht in den Container injiziert; (b) `restart` bzw. ein
+VPS-Reboot lädt neue `environment:`-Einträge nicht nach (der laufende Prozess friert seine Umgebung
+beim Start ein); (c) `docker exec printenv` zeigt die Variable evtl. trotzdem — das ist die
+Shell-Sicht, nicht die des n8n-Prozesses. Symptom: `$env.X` im Code-Knoten leer, obwohl printenv sie
+zeigt. Gegenprobe: eine funktionierende Referenzvariable wie `BEIRAT_VAULT_TOKEN` steht korrekt im
+Block; die neue muss genauso dort stehen.
 
 **Bekannte Altlast (18.07.2026, Stand 28.07.):** `nr7/.env.local` existiert lokal NICHT mehr — die unten genannten Speicherort-Listen sind entsprechend zu lesen (Live-Werte: Passwortmanager/Vercel). Ursprünglich: `nr7/.env.local` trug einen VERALTETEN berent-os service-Key (401 gegen die REST-API); Live-Wert liegt in Passwortmanager/Vercel. Vor Nutzung (auch fuer die n8n-Container-Env des Beirats) alle Orte per Fingerprint abgleichen.
 
@@ -161,3 +180,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-28 | v1.6 — Zusammenführung zweier auseinandergelaufener Fassungen (SSoT v1.5 + Beirat-Spiegel): SSoT-Regel im Kopf; idee-Datenfluss (Threema→Vault); *BERENTB-Router/Allowlist/Sendesperre; Env-Namen `_BERENTB` korrigiert; `VAULT_GITHUB_TOKEN`-Warnung; Linear-Keys; Ingo als Token-Verantwortlicher; Skill Executor `suljizPHm2nCwXCl` jetzt 19 Nodes (idee-Zweig + Kanal-Antwort). |
 | 2026-07-27 | v1.2 (Spiegel-Zweig) — iCloud/CalDAV als Kalender-Zugang (A10) und zugehoeriges Credential aufgenommen; Donna-Kalender angelegt. |
 | 2026-07-28 | v1.7 — A10 (Kalender iCloud/CalDAV) und die CalDAV-Credential-Zeile aus dem Spiegel-Zweig v1.2 zurueckgeholt; bei der v1.6-Zusammenfuehrung verloren gegangen. |
+| 2026-07-28 | v1.8 — CalDAV-Zugang von n8n-Credential-Store auf Container-Env (`ICLOUD_CALDAV_USER`/`_APP_PASSWORD`) umgestellt: der Kalender-Executor spricht CalDAV aus einem Code-Knoten (`$env`), der Roh-Body-`PUT` hatte im HTTP-Knoten keine Vorlage. Credential bleibt ungenutzt fuer KAL-P4. |
