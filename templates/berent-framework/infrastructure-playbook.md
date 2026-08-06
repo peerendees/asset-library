@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-07-13 · v1.0 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-08-06 · v1.1 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -34,12 +34,14 @@
 
 ### 2.2 Git-Konventionen
 
+- **Erst holen, dann arbeiten.** `git fetch` und Stand gegen `origin/` vergleichen (`git rev-list --left-right --count main...origin/main`), BEVOR die erste Zeile geändert wird. Wer auf einem veralteten Stand aufsetzt, merkt es erst beim Push — bei **versionierten Dokumenten** (`systems-register.md`, `ENGINEERING-PRINCIPLES.md`) vergibt er zusätzlich eine Versionsnummer zweimal. Auflösung dann per Rebase auf `origin/`, eigene Änderung umnummerieren; **nie** `--force`. *(Beleg: 06.08.2026 asset-library — lokales `main` lag 3 Commits zurück, `systems-register` v1.8 war remote bereits vergeben. Dieselbe Datei trägt in ihrem Änderungsprotokoll schon einen v1.6-Eintrag „Zusammenführung zweier auseinandergelaufener Fassungen".)*
 - **Commit pro Arbeitsschritt**, sprechende Botschaft (was + weshalb), Umlaute in Commit-Botschaften als ae/oe/ue.
 - **Push sofort** nach jedem abgeschlossenen Schritt (Remote = Backup + Wiederaufsetzpunkt).
 - **Tag pro Phase/Meilenstein** (`phase-1-fundament`).
 - KI-Commits: `Co-Authored-By: Claude <Modellname> <noreply@anthropic.com>`.
 - **main deployt automatisch** (Vercel-Repos): Features über Branch + PR; PR-Merge = bewusste Deploy-Freigabe.
 - Vor jedem Push: Secret-Scan über den Diff; bei Workflows/Deploys die belegchat-security-Checkliste.
+- **`.gitignore` ab dem ersten Commit**, mindestens `.DS_Store`. Getrackte Finder-Metadaten blockieren Rebase und Stash und verrauschen jeden Diff — nachträglich per `git rm --cached` entfernen.
 
 ## 3 · Datenbank (Supabase)
 

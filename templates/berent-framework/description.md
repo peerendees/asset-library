@@ -26,4 +26,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 | 1.0 | 2026-07-13 | Erstfassung (Kern-Trio + code-style-guide) |
 | 1.1 | 2026-08-06 | `ENGINEERING-PRINCIPLES.md` v1.1: §5.3 um die **Eingangserkennung** erweitert (Secrets, die ankommen, wo sie nicht hingehören — zurückweisen, Label benennen, Rotation anstoßen, Ampel Rot), dazu §8-Briefing und §9-Checkliste. Neu im Schlussabsatz: **benannte Ausnahme für irreversible Schadensklassen** — dort genügt ein gekennzeichneter Fremdbeleg. `systems-register.md` v1.9: Abschnitt „Secret-Formen am Eingang". |
 
-Version 1.1 · 2026-08-06
+| 1.2 | 2026-08-06 | `infrastructure-playbook.md` v1.1: §2.2 um **„Erst holen, dann arbeiten"** erweitert (`git fetch` und Stand-Vergleich vor der ersten Änderung — sonst wird bei versionierten Dokumenten eine Versionsnummer zweimal vergeben) und um die `.gitignore`-Pflicht ab dem ersten Commit. Beide aus einem Vorfall am selben Tag. |
+
+Version 1.2 · 2026-08-06
