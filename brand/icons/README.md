@@ -16,7 +16,12 @@ Kopiere die benötigten Icons in dein Projekt-`public/`-Verzeichnis.
 | icon-192.webp | 192×192 | PWA (wie PNG, kleinere Datei) |
 | icon-512.webp | 512×512 | PWA (wie PNG, kleinere Datei) |
 | icon-maskable-*.png | 192/512 | PWA (Android Adaptive Icons) |
-| logo-farbe.webp | variabel | Branding |
+| logo-farbe.webp | variabel | Branding (voller Schriftzug) |
+| master-b-e-square.png/.webp | 591×591 | Quadratischer Master des B+E-Zeichens — Quelle für alle quadratischen Icons |
+
+> **Hinweis:** favicon und apple-touch-icon bleiben bewusst PNG — iOS unterstützt kein WebP
+> für das Home-Screen-Icon, und für Favicons ist PNG die kompatible Wahl. WebP nur für PWA-Icons
+> und Branding-Grafiken.
 
 ## Projekte die dieses Set nutzen
 berent.ai, berent-ai-mail, calconny, blog, workshops, hacks, startrampe, launch-lotse, vaaas, textschmiede
