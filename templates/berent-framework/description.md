@@ -28,4 +28,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 
 | 1.2 | 2026-08-06 | `infrastructure-playbook.md` v1.1: §2.2 um **„Erst holen, dann arbeiten"** erweitert (`git fetch` und Stand-Vergleich vor der ersten Änderung — sonst wird bei versionierten Dokumenten eine Versionsnummer zweimal vergeben) und um die `.gitignore`-Pflicht ab dem ersten Commit. Beide aus einem Vorfall am selben Tag. |
 
-Version 1.2 · 2026-08-06
+| 1.3 | 2026-08-06 | `ENGINEERING-PRINCIPLES.md` v1.2: §2.8 Praxis um **„Nach Herleitung fragen, nicht nach Zustimmung"** ergänzt. Keine Erweiterung des Geltungsbereichs — nur die Frage an die Zweitinstanz wird umgestellt, weil „bestätigst du?" Zustimmung erzeugt. Kein neues Prinzip, daher ohne Beleg. |
+
+Version 1.3 · 2026-08-06

@@ -4,7 +4,7 @@
 > Diese Datei ist eine KI-Anweisungsdatei. Sie wird in jedes Projekt gelegt und sorgt dafür, dass Claude Code
 > Software baut, die **unbeaufsichtigt läuft und nicht bricht** — nachts um 03:00, ohne dass jemand zuschaut.
 >
-> Stand: 2026-08-06 · v1.1
+> Stand: 2026-08-06 · v1.2
 > Schwester-Dokumente: `infrastructure-playbook.md` (wo es läuft) · `systems-register.md` (was zusammenhängt) ·
 > berent-ci-Skill (wie es aussieht) · belegchat-security-Skill (Sicherheits-Checkliste vor Deploy/Push).
 >
@@ -144,6 +144,11 @@ Bewusst **selektiv**: nur für folgenreiche Ausgaben, nicht für jeden Output (K
   anderer Vendor = echte Unabhängigkeit; ein schlanker `fetch` genügt.
 - Input: deterministisches Kern-Ergebnis + zu prüfende Ausgabe → strukturiertes Urteil
   (bestätigt / Hinweise / Beanstandung). Rundungstoleranz bewusst setzen.
+- **Nach Herleitung fragen, nicht nach Zustimmung.** „Bestätigst du das?" erzeugt Zustimmung — die
+  Zweitinstanz neigt zum Ja, auch ohne geteilten blinden Fleck. Der Auftrag lautet deshalb:
+  *unabhängig herleiten, dann die Abweichung benennen.* Erst die Abweichung ist ein Signal;
+  ein „stimmt" ohne eigene Herleitung ist keins. Bei Zahlen ist das der Nachrechenweg oben, bei
+  qualitativen Ausgaben die nachgebaute Begründung.
 - Die Zweitinstanz ist selbst unzuverlässig (§2.6): Timeout, neutraler Fallback bei Ausfall —
   **NIE blockierend, NIE falscher Alarm**; bei Beanstandung greift die Governance-Ampel (§1.1):
   Ergebnis wird Gelb = Entwurf mit Freigabe, statt autonom rauszugehen.
@@ -251,7 +256,7 @@ der Umgebungsvariablen; ein Nutzer fügte den rohen Token trotzdem ins Freitextf
 - Volumen deckeln: Zeitfenster, Limits, Chunks, Feld-Caps — besonders auf geteilter Infrastruktur (2.5).
 - Timeout + selektiver Retry + menschliche Fehlermeldung an jedem Call (2.6).
 - Zahlen deterministisch rechnen; GoBD-Relevantes append-only mit Audit-Log (2.7).
-- Folgenreiche Ergebnisse von einer zweiten, unabhängigen KI gegenprüfen lassen — bei Zahlen durch Nachrechnen gegen den Kern; nie blockierend, bei Beanstandung → Gelb (2.8).
+- Folgenreiche Ergebnisse von einer zweiten, unabhängigen KI gegenprüfen lassen — sie nach eigener Herleitung fragen, nie nach Zustimmung; bei Zahlen durch Nachrechnen gegen den Kern; nie blockierend, bei Beanstandung → Gelb (2.8).
 - Jede Ausführung loggen (Dauer/Tokens/Kontext), Läufe melden ihr Ergebnis mit Zahlen (3.1–3.2).
 - Bei Kettenfehlern die kleinste Einheit isoliert testen; Secrets per Fingerprint vergleichen (3.3).
 - Secret-förmige Zeichenketten am Eingang erkennen, zurückweisen und die Rotation anstoßen — Rot, nicht Gelb (5.3).
