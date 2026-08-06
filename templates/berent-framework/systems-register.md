@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-07-28 · v1.8 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-08-06 · v1.9 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -150,6 +150,32 @@ Block; die neue muss genauso dort stehen.
 
 **Bekannte Altlast (18.07.2026, Stand 28.07.):** `nr7/.env.local` existiert lokal NICHT mehr — die unten genannten Speicherort-Listen sind entsprechend zu lesen (Live-Werte: Passwortmanager/Vercel). Ursprünglich: `nr7/.env.local` trug einen VERALTETEN berent-os service-Key (401 gegen die REST-API); Live-Wert liegt in Passwortmanager/Vercel. Vor Nutzung (auch fuer die n8n-Container-Env des Beirats) alle Orte per Fingerprint abgleichen.
 
+### Secret-Formen am Eingang — Erkennungsmuster
+
+> **Gegenstück zum Verzeichnis oben.** Das Verzeichnis regelt, **wo** ein Secret liegen darf und wie rotiert
+> wird. Diese Tabelle regelt, woran ein Secret zu erkennen ist, **wenn es ankommt, wo es nicht hingehört** —
+> `ENGINEERING-PRINCIPLES.md` §5.3, Gegenrichtung. Bei Fund: nicht verarbeiten, nicht speichern, nicht
+> protokollieren, nicht wiederholen. Label benennen, Rotation über ALLE Orte anstoßen, Ampel auf **Rot**.
+
+| Form | Muster | Bei BERENT typisch für |
+|---|---|---|
+| JWT | `eyJ`-Präfix, drei durch `.` getrennte base64url-Teile | Supabase-Legacy-Keys, Session-/Challenge-JWTs (NR7) |
+| Authorization-Kopfzeile | `Bearer ` gefolgt von ≥20 Zeichen | jede kopierte API-Antwort, jedes kopierte `curl` |
+| Supabase | `sb_secret_…`, `sb_publishable_…` | berent-os, BelegChat |
+| GitHub PAT | `ghp_`, `github_pat_` | `BEIRAT_VAULT_TOKEN`, `VAULT_GITHUB_TOKEN` |
+| Anthropic | `sk-ant-` | `BEIRAT_ANTHROPIC_KEY`, n8n-Credential „Anthropic API" |
+| Slack | `xoxb-`, `xoxp-` | slack-daily-summary |
+| Privater Schlüssel | `-----BEGIN … PRIVATE KEY-----` | Threema `THREEMA_PRIVATE_KEY*` |
+| Threema Gateway | jeder Wert zu `THREEMA_SECRET_*` / `THREEMA_PRIVATE_KEY*` — über den Variablennamen, nicht über die Form | *BERENT1/2, *BERENTB |
+| Unspezifisch | ≥24 Zeichen, hohe Entropie, kein Wörterbuchwort | Linear-Keys, `N8N_API_KEY`, IMAP-Passwörter |
+
+**Grenze — ehrlich:** Musterbasiert, also ein **Stolperdraht, keine Mauer**. Ein strukturloses Passwort, ein
+base64-Blob, der wie Nutzdaten aussieht, oder ein in Teilen eingefügtes Secret rutschen durch. Bei
+Unsicherheit gilt: wie ein Secret behandeln (`ENGINEERING-PRINCIPLES.md` §1.3, fail-closed).
+
+**Pflege:** Kommt ein neues Secret ins Verzeichnis oben, gehört seine Form hier dazu — sonst kennt die
+Eingangserkennung es nicht. Zuständig wie für das Verzeichnis: Ingo.
+
 ---
 
 ## Datenfluss — Kernprozesse
@@ -181,3 +207,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-27 | v1.2 (Spiegel-Zweig) — iCloud/CalDAV als Kalender-Zugang (A10) und zugehoeriges Credential aufgenommen; Donna-Kalender angelegt. |
 | 2026-07-28 | v1.7 — A10 (Kalender iCloud/CalDAV) und die CalDAV-Credential-Zeile aus dem Spiegel-Zweig v1.2 zurueckgeholt; bei der v1.6-Zusammenfuehrung verloren gegangen. |
 | 2026-07-28 | v1.8 — CalDAV-Zugang von n8n-Credential-Store auf Container-Env (`ICLOUD_CALDAV_USER`/`_APP_PASSWORD`) umgestellt: der Kalender-Executor spricht CalDAV aus einem Code-Knoten (`$env`), der Roh-Body-`PUT` hatte im HTTP-Knoten keine Vorlage. Credential bleibt ungenutzt fuer KAL-P4. |
+| 2026-08-06 | v1.9 — Neuer Abschnitt „Secret-Formen am Eingang" als Gegenstueck zum Verzeichnis: Erkennungsmuster fuer Secrets, die ankommen, wo sie nicht hingehoeren. Gehoert zu `ENGINEERING-PRINCIPLES.md` v1.1 §5.3 (Eingangserkennung). Kein neues Secret, keine Aenderung am Verzeichnis. |

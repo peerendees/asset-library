@@ -7,7 +7,7 @@ in den Projekt-Root kopiert und in der CLAUDE.md referenziert.
 |---|---|
 | `ENGINEERING-PRINCIPLES.md` | Wie gebaut wird, damit es unbeaufsichtigt läuft und nicht bricht (Governance, Robustheit, Beobachtbarkeit, Ökonomie, Auslieferung) |
 | `infrastructure-playbook.md` | Wo es läuft: Hostinger/n8n, Vercel, Supabase, GitHub — Konventionen und Checklisten |
-| `systems-register.md` | Was zusammenhängt: Systemlandschaft, Datenflüsse und das **Secret-Verzeichnis** (ein Label, alle Speicherorte) |
+| `systems-register.md` | Was zusammenhängt: Systemlandschaft, Datenflüsse, das **Secret-Verzeichnis** (ein Label, alle Speicherorte) und die **Erkennungsmuster am Eingang** |
 | `code-style-guide.md` | Wie Code geschrieben wird: gelebte Konventionen aus dem Bestand (TS/Next, .mjs, SQL, n8n) |
 
 **Nutzung:** Siehe „BERENT-Framework — Anleitung" im Vault (04 Ressourcen). Kurzform: Dateien kopieren,
@@ -19,4 +19,11 @@ Inhalte vollständig aus der BERENT-Praxis (Umbau-Session 11.–13.07.2026). Aus
 (Folgeliste): FOUNDATION/PROTOTYPE-PRINCIPLES (Erlebnis-Schicht) · issue-templates ·
 design-principles ist durch den berent-ci-Skill abgedeckt.
 
-Version 1.0 · 2026-07-13
+**Änderungen**
+
+| Version | Datum | Was |
+|---|---|---|
+| 1.0 | 2026-07-13 | Erstfassung (Kern-Trio + code-style-guide) |
+| 1.1 | 2026-08-06 | `ENGINEERING-PRINCIPLES.md` v1.1: §5.3 um die **Eingangserkennung** erweitert (Secrets, die ankommen, wo sie nicht hingehören — zurückweisen, Label benennen, Rotation anstoßen, Ampel Rot), dazu §8-Briefing und §9-Checkliste. Neu im Schlussabsatz: **benannte Ausnahme für irreversible Schadensklassen** — dort genügt ein gekennzeichneter Fremdbeleg. `systems-register.md` v1.9: Abschnitt „Secret-Formen am Eingang". |
+
+Version 1.1 · 2026-08-06
