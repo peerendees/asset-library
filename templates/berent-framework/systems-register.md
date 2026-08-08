@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-08-06 · v1.9 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-08-06 · v1.10 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -125,7 +125,7 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
 | `ICLOUD_CALDAV_USER` + `ICLOUD_CALDAV_APP_PASSWORD` (iCloud CalDAV) | ① n8n-Container-Env ② Passwortmanager | Kalender-Executor (`$env`, Code-Knoten) |
 | ~~n8n-Credential `iCloud CalDAV` (Basic Auth)~~ | n8n-Credential-Store — **angelegt, aber ungenutzt** seit 28.07. | reserviert für KAL-P4 (HTTP-Knoten, falls `REPORT` dort geht) |
-| `N8N_API_KEY` | nr7/.env.local | n8n-Verwaltung per API |
+| `N8N_API_KEY` | ① nr7/.env.local ② berent-ki-team-orga/.env.local (01.08.2026, Rechte 600, durch `*.local` gitignored) ③ n8n unter *Settings → n8n API* (Quelle; dort auch widerrufbar) | n8n-Verwaltung per API. **Neu 01.08.:** Claude Code liest damit Workflow-Stand und Execution-Daten. Selbstbeschränkung: lesen und aktualisieren ja, aktivieren und löschen nein — ein aktualisierter Workflow bleibt in dem Aktiv-Zustand, den Marcus gesetzt hat. Erster Schreibzugriff am 01.08. (Upload-Fix in beide Ingestion-Strecken, ORGA-76). **Falle:** Das PUT-Schema akzeptiert weniger `settings`-Felder als das GET zurückgibt — `callerPolicy`, `binaryMode`, `timeSavedMode`, `availableInMCP` müssen raus, sonst HTTP 400. |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
 | `BEIRAT_VAULT_TOKEN` (GitHub PAT, contents:write nur auf berent-2nd-brain) | n8n-Container-Env + Passwortmanager | Beirat-Vault-Export · Skill Executor/`donna/idee` (bevorzugt, da nachweislich gültig) |
@@ -208,3 +208,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-28 | v1.7 — A10 (Kalender iCloud/CalDAV) und die CalDAV-Credential-Zeile aus dem Spiegel-Zweig v1.2 zurueckgeholt; bei der v1.6-Zusammenfuehrung verloren gegangen. |
 | 2026-07-28 | v1.8 — CalDAV-Zugang von n8n-Credential-Store auf Container-Env (`ICLOUD_CALDAV_USER`/`_APP_PASSWORD`) umgestellt: der Kalender-Executor spricht CalDAV aus einem Code-Knoten (`$env`), der Roh-Body-`PUT` hatte im HTTP-Knoten keine Vorlage. Credential bleibt ungenutzt fuer KAL-P4. |
 | 2026-08-06 | v1.9 — Neuer Abschnitt „Secret-Formen am Eingang" als Gegenstueck zum Verzeichnis: Erkennungsmuster fuer Secrets, die ankommen, wo sie nicht hingehoeren. Gehoert zu `ENGINEERING-PRINCIPLES.md` v1.1 §5.3 (Eingangserkennung). Kein neues Secret, keine Aenderung am Verzeichnis. |
+| 2026-08-06 | v1.10 — `N8N_API_KEY`-Zeile aus dem Beirat-Spiegel **zurueckgeholt**: zweiter Speicherort (`berent-ki-team-orga/.env.local`), die Quelle (n8n *Settings → n8n API*), die Selbstbeschraenkung fuer Claude Code (lesen/aktualisieren ja, aktivieren/loeschen nein) und die PUT-Schema-Falle. Der SSoT kannte nur einen Speicherort. **Der Spiegel war erneut direkt editiert worden** — dieselbe Fehlerart wie am 27./28.07. (siehe v1.6/v1.7). Beim naechsten Mal faellt so eine Zeile still heraus. |
