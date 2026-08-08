@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-08-06 · v1.1 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-08-06 · v1.2 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -34,7 +34,12 @@
 
 ### 2.2 Git-Konventionen
 
-- **Erst holen, dann arbeiten.** `git fetch` und Stand gegen `origin/` vergleichen (`git rev-list --left-right --count main...origin/main`), BEVOR die erste Zeile geändert wird. Wer auf einem veralteten Stand aufsetzt, merkt es erst beim Push — bei **versionierten Dokumenten** (`systems-register.md`, `ENGINEERING-PRINCIPLES.md`) vergibt er zusätzlich eine Versionsnummer zweimal. Auflösung dann per Rebase auf `origin/`, eigene Änderung umnummerieren; **nie** `--force`. *(Beleg: 06.08.2026 asset-library — lokales `main` lag 3 Commits zurück, `systems-register` v1.8 war remote bereits vergeben. Dieselbe Datei trägt in ihrem Änderungsprotokoll schon einen v1.6-Eintrag „Zusammenführung zweier auseinandergelaufener Fassungen".)*
+- **Erst holen und hinsehen, dann arbeiten.** Vor der ersten Änderung zwei Fragen **beantworten**, nicht nur stellen:
+  1. *Auf welchem Branch stehe ich?* — `git branch --show-current`. Ein Arbeitsbaum steht selten dort, wo man ihn verlassen hat: parallele Sitzungen wechseln ihn, gemergte PR-Branches bleiben ausgecheckt liegen.
+  2. *Wie weit bin ich zurück?* — `git fetch`, dann `git rev-list --left-right --count main...origin/main`.
+
+  Wer auf einem veralteten Stand aufsetzt, merkt es erst beim Push — bei **versionierten Dokumenten** (`systems-register.md`, `ENGINEERING-PRINCIPLES.md`) vergibt er zusätzlich eine Versionsnummer zweimal. Auflösung: Rebase auf `origin/`, eigene Änderung umnummerieren; **nie** `--force`. Wer auf dem falschen Branch committet hat, holt den Commit per `git cherry-pick` auf `main` und setzt den fremden Branch mit `git branch -f <branch> origin/<branch>` auf den Remote-Stand zurück.
+  *(Zwei Belege, beide 06.08.2026 asset-library. Erstens: lokales `main` lag 3 Commits zurück, `systems-register` v1.8 war remote bereits vergeben — dieselbe Datei trägt im Änderungsprotokoll schon einen v1.6-Eintrag „Zusammenführung zweier auseinandergelaufener Fassungen". Zweitens, am selben Tag: Divergenz zwar abgefragt, die Antwort aber nicht gelesen — und dazu auf einem längst gemergten PR-Branch statt auf `main` committet. Eine abgerufene Zahl, die niemand liest, ist keine Prüfung.)*
 - **Commit pro Arbeitsschritt**, sprechende Botschaft (was + weshalb), Umlaute in Commit-Botschaften als ae/oe/ue.
 - **Push sofort** nach jedem abgeschlossenen Schritt (Remote = Backup + Wiederaufsetzpunkt).
 - **Tag pro Phase/Meilenstein** (`phase-1-fundament`).

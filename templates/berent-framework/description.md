@@ -30,4 +30,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 
 | 1.3 | 2026-08-06 | `ENGINEERING-PRINCIPLES.md` v1.2: §2.8 Praxis um **„Nach Herleitung fragen, nicht nach Zustimmung"** ergänzt. Keine Erweiterung des Geltungsbereichs — nur die Frage an die Zweitinstanz wird umgestellt, weil „bestätigst du?" Zustimmung erzeugt. Kein neues Prinzip, daher ohne Beleg. |
 
-Version 1.3 · 2026-08-06
+| 1.4 | 2026-08-06 | `infrastructure-playbook.md` v1.2: Die Vorflug-Prüfung in §2.2 fragt jetzt **zwei** Dinge — welcher Branch (`git branch --show-current`) und welcher Stand (`git fetch` + Divergenz). Dazu der Rückweg, wenn schon auf dem falschen Branch committet wurde. Zweiter Beleg am selben Tag. `systems-register.md` v1.10: `N8N_API_KEY` — zweiter Speicherort, Quelle, Selbstbeschränkung und PUT-Schema-Falle aus dem Beirat-Spiegel zurückgeholt. |
+
+Version 1.4 · 2026-08-06
