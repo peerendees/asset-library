@@ -32,4 +32,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 
 | 1.4 | 2026-08-06 | `infrastructure-playbook.md` v1.2: Die Vorflug-Prüfung in §2.2 fragt jetzt **zwei** Dinge — welcher Branch (`git branch --show-current`) und welcher Stand (`git fetch` + Divergenz). Dazu der Rückweg, wenn schon auf dem falschen Branch committet wurde. Zweiter Beleg am selben Tag. `systems-register.md` v1.10: `N8N_API_KEY` — zweiter Speicherort, Quelle, Selbstbeschränkung und PUT-Schema-Falle aus dem Beirat-Spiegel zurückgeholt. |
 
-Version 1.4 · 2026-08-06
+| 1.5 | 2026-08-08 | `infrastructure-playbook.md` v1.3: neuer §10 **„Fremdgut — Übernahme aus fremden Quellen"**. Kernunterscheidung: geschützt ist die Ausformulierung, nicht das Verfahren. Vier Regeln — Mechanismus übernehmen und neu formulieren, Herkunft an der Übernahmestelle, Lizenz mitnehmen sobald wirklich kopiert wird, fremde Volltexte bleiben intern. Verschriftlicht eine seit 07/2026 gelebte Praxis. |
+
+Version 1.5 · 2026-08-08

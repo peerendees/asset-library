@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-08-06 · v1.2 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-08-08 · v1.3 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -115,6 +115,23 @@
 
 Hostinger VPS (n8n) · Vercel Team · Supabase Free/Pro · Anthropic API (nach Verbrauch — Modellwahl und
 Regel-vor-Modell drücken die Kosten, Engineering §4) · Threema Gateway Credits (*BERENT1/2).
+
+## 10 · Fremdgut — Übernahme aus fremden Quellen
+
+Gilt für alles Fremde: Code, Konfiguration, Regelwerke, Vorträge, Studien, Kundendokumente.
+Die Unterscheidung, auf die alles hinausläuft: **Geschützt ist die Ausformulierung, nicht das Verfahren.**
+
+- **Mechanismus übernehmen, Wortlaut neu schreiben.** Ein Verfahren („neue Paketversionen erst nach sieben Tagen") ist frei; der Absatz, mit dem jemand es aufgeschrieben hat, nicht. Nie fremde Absätze übernehmen, auch nicht umgestellt. **Umformulieren mit dem Ziel, die Herkunft zu verwischen, ist die schlechteste Variante** — mehr Aufwand als eigenes Formulieren und rechtlich riskanter.
+- **Herkunft an der Übernahmestelle, nicht in einer Sammelliste.** Eine Fußnote am Dateiende beantwortet nicht, welcher Absatz woher kommt. Format wie bei den Belegen in `ENGINEERING-PRINCIPLES.md`: Quelle in Klammern, direkt an der Regel.
+- **Lizenz mitnehmen, sobald wirklich kopiert wird.** Bei MIT (Intentron, Prime Agent) wandern Urheberrechtsvermerk und Lizenztext mit, sobald Code oder Textdateien übernommen werden. Wer nur ein Verfahren nachbaut, löst die Lizenz gar nicht erst aus.
+- **Fremde Volltexte bleiben intern.** Mitschriften, Übersetzungen und Kopien fremder Vorträge, Studien und Dokumente sind **Bearbeitungen**. Arbeitskopie im Vault: ja. Weitergabe, Veröffentlichung, Versand an Kunden: nur mit Zustimmung des Urhebers. Solche Dateien tragen einen Kopfblock, der genau das festhält.
+- **Zitate** bleiben kurz, stehen in Anführungszeichen und nennen Urheber und Anlass. Ein Zitat ersetzt keine eigene Formulierung.
+- **Gegenrichtung nicht vergessen:** Eigene Mechanismen an Fremde weiterzugeben ist eine **Entscheidung**, keine Nebensache — besonders bei MIT-lizenzierten Projekten, die sie anschließend weiterverbreiten.
+
+*(Gelebte Praxis seit 07/2026, hier nur benannt: Die Übernahme der Koerting-Impulse war von Tobias und
+TJ freigegeben, die BERENT-Fassung ist eigenständig formuliert und trägt ihre Herkunft im Schlussabsatz —
+so wie die Fußzeile dieser Datei. Anlass der Verschriftlichung: die Auswertung eines fremden
+Konferenzvortrags und eines fremden Repos am 06./08.08.2026.)*
 
 ---
 
