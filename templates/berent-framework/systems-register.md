@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-08-06 · v1.10 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-08-08 · v1.11 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -62,6 +62,11 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
   `BERENTB_ERLAUBTE_ABSENDER` (Default BUMFMZ39). Sendesperre `lib/sende-sperre.js`:
   max. 8 Sendungen je Empfänger in 5 Min (Lehre aus der Antwort-Schleife vom 27.07.,
   ~900 Sendungen durch Empfangsbestätigungen Typ 0x80).
+  **Seit 08.08. (ORGA-136):** dritter Router-Eintrag für den Donna-Dialog — nur die
+  ok-n-Syntax MIT Zahl (`ok 3`, `nein 3`, `widerruf 3`) sowie `ok alle` und `stopp`.
+  Bewusst enger als der Plan: `widerruf` OHNE Zahl gehört dem Kalender-Strang, blosses
+  `ok`/`nein` ist die Antwort auf eine offene `rueckfrage`. Ziel-Variable
+  `N8N_DONNA_WEBHOOK` (siehe Secret-Verzeichnis).
 
 ### A6 · Mail-Konten
 - **iCloud** (imap.mail.me.com:993, App-Passwort) — Ingestion live, Bestand 2026 komplett.
@@ -126,6 +131,7 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | `ICLOUD_CALDAV_USER` + `ICLOUD_CALDAV_APP_PASSWORD` (iCloud CalDAV) | ① n8n-Container-Env ② Passwortmanager | Kalender-Executor (`$env`, Code-Knoten) |
 | ~~n8n-Credential `iCloud CalDAV` (Basic Auth)~~ | n8n-Credential-Store — **angelegt, aber ungenutzt** seit 28.07. | reserviert für KAL-P4 (HTTP-Knoten, falls `REPORT` dort geht) |
 | `N8N_API_KEY` | ① nr7/.env.local ② berent-ki-team-orga/.env.local (01.08.2026, Rechte 600, durch `*.local` gitignored) ③ n8n unter *Settings → n8n API* (Quelle; dort auch widerrufbar) | n8n-Verwaltung per API. **Neu 01.08.:** Claude Code liest damit Workflow-Stand und Execution-Daten. Selbstbeschränkung: lesen und aktualisieren ja, aktivieren und löschen nein — ein aktualisierter Workflow bleibt in dem Aktiv-Zustand, den Marcus gesetzt hat. Erster Schreibzugriff am 01.08. (Upload-Fix in beide Ingestion-Strecken, ORGA-76). **Falle:** Das PUT-Schema akzeptiert weniger `settings`-Felder als das GET zurückgibt — `callerPolicy`, `binaryMode`, `timeSavedMode`, `availableInMCP` müssen raus, sonst HTTP 400. |
+| `N8N_DONNA_WEBHOOK` (kein Geheimnis, aber ein Schalter — deshalb hier) | ① Vercel threema-decrypt Env (alle Umgebungen) ② Wert = Webhook-URL des n8n-Workflows `BERENT Donna-Dialog (*BERENTB)` | `api/beirat-callback.js`: leitet die ok-n-Syntax (`ok 3`, `nein 3`, `ok alle`, `widerruf 3`, `stopp`) an den Donna-Dialog. **Ohne Rueckfall-Wert**: fehlt die Variable, entfaellt der Zweig und der Text geht wie bisher an den Skill Executor (fail-closed). Reihenfolge beim Einrichten: erst den Workflow scharf schalten, dann die Variable setzen. |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
 | `BEIRAT_VAULT_TOKEN` (GitHub PAT, contents:write nur auf berent-2nd-brain) | n8n-Container-Env + Passwortmanager | Beirat-Vault-Export · Skill Executor/`donna/idee` (bevorzugt, da nachweislich gültig) |
@@ -209,3 +215,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-07-28 | v1.8 — CalDAV-Zugang von n8n-Credential-Store auf Container-Env (`ICLOUD_CALDAV_USER`/`_APP_PASSWORD`) umgestellt: der Kalender-Executor spricht CalDAV aus einem Code-Knoten (`$env`), der Roh-Body-`PUT` hatte im HTTP-Knoten keine Vorlage. Credential bleibt ungenutzt fuer KAL-P4. |
 | 2026-08-06 | v1.9 — Neuer Abschnitt „Secret-Formen am Eingang" als Gegenstueck zum Verzeichnis: Erkennungsmuster fuer Secrets, die ankommen, wo sie nicht hingehoeren. Gehoert zu `ENGINEERING-PRINCIPLES.md` v1.1 §5.3 (Eingangserkennung). Kein neues Secret, keine Aenderung am Verzeichnis. |
 | 2026-08-06 | v1.10 — `N8N_API_KEY`-Zeile aus dem Beirat-Spiegel **zurueckgeholt**: zweiter Speicherort (`berent-ki-team-orga/.env.local`), die Quelle (n8n *Settings → n8n API*), die Selbstbeschraenkung fuer Claude Code (lesen/aktualisieren ja, aktivieren/loeschen nein) und die PUT-Schema-Falle. Der SSoT kannte nur einen Speicherort. **Der Spiegel war erneut direkt editiert worden** — dieselbe Fehlerart wie am 27./28.07. (siehe v1.6/v1.7). Beim naechsten Mal faellt so eine Zeile still heraus. |
+| 2026-08-08 | v1.11 — `N8N_DONNA_WEBHOOK` aufgenommen (ORGA-136, Lernschleife Phase 3): Ziel-Webhook fuer die `ok n`-Antworten aus `*BERENTB`, Wert nur in Vercel, kein Rueckfall-Wert im Code. A5 um den dritten Router-Eintrag ergaenzt. **Zuerst hier im SSoT eingetragen, dann in den Beirat-Spiegel gezogen** — der Anlass steht in v1.10. |
