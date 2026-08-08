@@ -34,4 +34,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 
 | 1.5 | 2026-08-08 | `infrastructure-playbook.md` v1.3: neuer §10 **„Fremdgut — Übernahme aus fremden Quellen"**. Kernunterscheidung: geschützt ist die Ausformulierung, nicht das Verfahren. Vier Regeln — Mechanismus übernehmen und neu formulieren, Herkunft an der Übernahmestelle, Lizenz mitnehmen sobald wirklich kopiert wird, fremde Volltexte bleiben intern. Verschriftlicht eine seit 07/2026 gelebte Praxis. |
 
-Version 1.5 · 2026-08-08
+| 1.6 | 2026-08-08 | `ENGINEERING-PRINCIPLES.md` v1.3: neuer §5.4 **„Abhängigkeiten reifen lassen"** — Mindestalter sieben Tage vor Übernahme neuer Paketversionen, mit Pflicht zur Verdrahtungsprüfung (`npm ≥ 11.10`, sonst greift die Einstellung stillschweigend nicht). Begründung über die Schadensform: das Update ist rückrollbar, ein bösartiges `postinstall` mit Credential-Abfluss nicht — daher benannte Ausnahme. Dazu §8-Briefing und §9-Checkliste. |
+
+Version 1.6 · 2026-08-08

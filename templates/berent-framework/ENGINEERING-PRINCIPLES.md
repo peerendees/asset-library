@@ -4,7 +4,7 @@
 > Diese Datei ist eine KI-Anweisungsdatei. Sie wird in jedes Projekt gelegt und sorgt dafür, dass Claude Code
 > Software baut, die **unbeaufsichtigt läuft und nicht bricht** — nachts um 03:00, ohne dass jemand zuschaut.
 >
-> Stand: 2026-08-06 · v1.2
+> Stand: 2026-08-08 · v1.3
 > Schwester-Dokumente: `infrastructure-playbook.md` (wo es läuft) · `systems-register.md` (was zusammenhängt) ·
 > berent-ci-Skill (wie es aussieht) · belegchat-security-Skill (Sicherheits-Checkliste vor Deploy/Push).
 >
@@ -243,6 +243,32 @@ strukturloses Passwort oder ein base64-Blob, der wie Nutzdaten aussieht, rutscht
 Folie „Even ‚Just the Variable Name' Isn't Safe" — der Agent fragte konstruktionsbedingt nur nach dem NAMEN
 der Umgebungsvariablen; ein Nutzer fügte den rohen Token trotzdem ins Freitextfeld ein.)*
 
+### 5.4 · Abhängigkeiten reifen lassen — *Mindestalter vor Übernahme*
+
+**Prinzip.** Neue Versionen fremder Pakete werden erst nach einer Karenzzeit übernommen — Vorgabe
+**sieben Tage**. Für dringende Sicherheitspatches gibt es einen ausdrücklichen, einzeln begründeten
+Übersteuerungsweg, nie eine pauschale Abschaltung.
+
+**Warum das unter Auslieferung steht.** Der Angriffsweg ist die kompromittierte Version eines
+legitimen, viel genutzten Pakets. Solche Vorfälle werden meist binnen Stunden bis Tagen entdeckt und
+zurückgezogen — wer eine Woche wartet, sieht sie nicht. Entscheidend ist die Schadensform: Die
+Abhängigkeit selbst lässt sich zurückrollen, das typische Schadensbild nicht. Ein bösartiges
+`postinstall`-Skript liest Umgebungsvariablen und Credential-Dateien und schickt sie fort. Damit
+liegt der Fall bei **abgeflossenen Secrets** (5.3) — und genau deshalb greift die benannte Ausnahme
+aus dem Schlussabsatz, obwohl das Paket-Update für sich genommen reversibel wäre.
+
+**Praxis.** `.npmrc` im Projekt-Root: `min-release-age=7`. Läuft Dependabot, bekommt es eine
+passende Abklingzeit — sonst schlägt es Versionen vor, die npm anschließend verweigert.
+Übersteuerung nur einzeln: `npm install --min-release-age=0 <paket>`, mit Begründung im Commit.
+
+**Verdrahtungsprüfung — Pflicht bei jeder Übernahme.** Die Einstellung wirkt erst ab **npm ≥ 11.10**;
+ältere Versionen ignorieren sie **stillschweigend**. Wer sie setzt, ohne `npm --version` zu prüfen,
+hat kein Gate, sondern eine Zeile in einer Datei. Das ist derselbe Fehler wie ein deklariertes, aber
+nicht verdrahtetes Quality Gate — nur billiger zu vermeiden.
+
+*(Fremdbeleg nach der benannten Ausnahme: Entwicklungsregeln von `PrimeIntellect-ai/prime-agent`
+(MIT), geprüft 08.08.2026. Mechanismus übernommen, Wortlaut eigen — Playbook §10.)*
+
 ---
 
 ## 8 · Prinzipien-Briefing für Claude Code (kopierfertig)
@@ -260,6 +286,7 @@ der Umgebungsvariablen; ein Nutzer fügte den rohen Token trotzdem ins Freitextf
 - Jede Ausführung loggen (Dauer/Tokens/Kontext), Läufe melden ihr Ergebnis mit Zahlen (3.1–3.2).
 - Bei Kettenfehlern die kleinste Einheit isoliert testen; Secrets per Fingerprint vergleichen (3.3).
 - Secret-förmige Zeichenketten am Eingang erkennen, zurückweisen und die Rotation anstoßen — Rot, nicht Gelb (5.3).
+- Neue Paketversionen sieben Tage reifen lassen; beim Setzen der Regel die npm-Version prüfen, sonst greift sie stillschweigend nicht (5.4).
 - Regeln vor Modell, billig vor teuer, Kontext minimal (4.1–4.2).
 - Commit pro Schritt, Push sofort, Tag pro Phase, Migrationen spiegeln (5.1).
 
@@ -285,6 +312,7 @@ der Umgebungsvariablen; ein Nutzer fügte den rohen Token trotzdem ins Freitextf
 - [ ] Fehlertoleranz pro Element? Läuft der Rest bei einem Gift-Element weiter?
 - [ ] Secrets: fail-closed, alle Speicherorte im Register dokumentiert?
 - [ ] Erkennt der Eingang secret-förmige Zeichenketten, und ist der Rotationspfad hinterlegt? (5.3)
+- [ ] `min-release-age` gesetzt UND npm ≥ 11.10 — sonst ist die Regel blind? (5.4)
 - [ ] Braucht ein folgenreiches Ergebnis (Beträge, Empfehlungen, Rechtliches) die Zweitvalidierung? (2.8)
 - [ ] Execution-Log + Ergebnis-Benachrichtigung mit Zahlen?
 - [ ] Migrationen gespiegelt, Commits gepusht, Tag gesetzt?
