@@ -36,4 +36,6 @@ design-principles ist durch den berent-ci-Skill abgedeckt.
 
 | 1.6 | 2026-08-08 | `ENGINEERING-PRINCIPLES.md` v1.3: neuer §5.4 **„Abhängigkeiten reifen lassen"** — Mindestalter sieben Tage vor Übernahme neuer Paketversionen, mit Pflicht zur Verdrahtungsprüfung (`npm ≥ 11.10`, sonst greift die Einstellung stillschweigend nicht). Begründung über die Schadensform: das Update ist rückrollbar, ein bösartiges `postinstall` mit Credential-Abfluss nicht — daher benannte Ausnahme. Dazu §8-Briefing und §9-Checkliste. |
 
-Version 1.6 · 2026-08-08
+| 1.7 | 2026-08-25 | `infrastructure-playbook.md` v1.4: neuer **§5a Coolify** — Hosting der berent.ai-Subdomains. Kern: Der Proxy gehört nicht Coolify und läuft mit `exposedbydefault=false`, ein Container ohne Traefik-Labels ist unsichtbar. Dazu Label-Vorlage, Diagnose in dreißig Sekunden und vier belegte Fallen. `systems-register.md` v1.13: **A11 Coolify** (läuft auf derselben Maschine wie n8n) und der SSH-Zugang. |
+
+Version 1.7 · 2026-08-25
