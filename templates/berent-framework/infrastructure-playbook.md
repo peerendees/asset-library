@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-08-08 · v1.3 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-08-25 · v1.4 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -81,6 +81,80 @@
 - **Env pro Projekt dokumentieren** (im Projekt-README oder CLAUDE.md): Name, Zweck, Quelle — nie den Wert.
 - Function-Auth fail-closed im Code (Bearer gegen Env, timing-safe); Domains: nr7.berent.ai u. a.
 - Debugging: Vercel-MCP (`list_deployments`, `get_runtime_logs`) liefert Deploy-Historie + Runtime-Fehler.
+
+## 5a · Coolify — Hosting der berent.ai-Subdomains
+
+**Wo:** Oberfläche `coolify.berent.ai` (Cloudflare-proxied — **kein SSH darüber**, dafür die IP).
+Läuft auf **`srv1098810`, derselben Maschine wie n8n** (§4), nicht auf einem eigenen Server.
+Seit 07/2026 tragen dort die berent.ai-Websites; Vercel ist für diese Hosts aus dem Weg.
+
+**Der Proxy gehört nicht Coolify.** Den Verkehr verteilt `root-traefik-1` aus dem Compose-Projekt
+`root` — erkennbar am Löser `mytlschallenge` und der ACME-Adresse `user@srv1098810.hstgr.cloud`.
+Er läuft mit `--providers.docker.exposedbydefault=false`:
+
+> **Ein Container ohne Traefik-Labels ist für den Proxy unsichtbar.** Er ist dann nicht kaputt,
+> er existiert nicht. Coolify schreibt für neue Anwendungen keine Labels — das tut ein Mensch.
+
+Deshalb der Hinweis in der Oberfläche: *„Container label readonly mode is disabled. Domains must be
+set in the Labels section."* Eine Domain im Domains-Bereich einzutragen bewirkt für sich **nichts**.
+
+### Neue Subdomain — Reihenfolge
+
+1. **Cloudflare**: Eintrag wie ein bestehender Host, **proxied**. Gegenprobe `dig +short` gegen `blog`.
+2. **Anwendung anlegen**: Bauart **Static**, Webserver `nginx:alpine`, Base directory `/` — Hausmuster
+   der laufenden Hosts. Bauart lässt sich später **nicht** wechseln (siehe unten).
+3. **Domain** unter Public access eintragen, ohne Portangabe.
+4. **Labels** setzen (General-Seite) — ohne diesen Schritt passiert nichts:
+
+```
+traefik.enable=true
+traefik.http.middlewares.gzip.compress=true
+traefik.http.routers.NAME.entryPoints=websecure
+traefik.http.routers.NAME.middlewares=gzip
+traefik.http.routers.NAME.rule=Host(`SUBDOMAIN.berent.ai`)
+traefik.http.routers.NAME.service=NAME-svc
+traefik.http.routers.NAME.tls=true
+traefik.http.services.NAME-svc.loadbalancer.server.port=80
+```
+
+`NAME` frei wählbar, muss nur in diesen Zeilen zusammenpassen. Container im Netz `coolify`, intern
+Port 80.
+5. **Deployen**, dann prüfen — nicht im Browser, der cached.
+6. **Host ins `systems-register.md`.**
+
+### Prüfung in dreißig Sekunden
+
+```bash
+curl -sS -o /dev/null -w "%{http_code}\n" https://neu.berent.ai
+curl -sS -o /dev/null -w "%{http_code}\n" https://gibtesnichtxyz.berent.ai
+```
+
+Beide **404** mit 19-Byte-Rumpf `404 page not found` → Traefik kennt den Host nicht, **Labels fehlen**.
+Nur die neue Subdomain 5xx → Route steht, Container antwortet nicht. Anderer 404-Rumpf → Datei fehlt.
+
+Auf dem Server: `docker inspect <container> --format '{{json .Config.Labels}}' | grep traefik` —
+kommt nichts, ist der Container unsichtbar.
+
+### Fallen, alle belegt
+
+- **Bauart nicht nachträglich wechselbar.** Eine als *Compose* angelegte Anwendung bleibt es; gestartet
+  wird weiter aus der in Coolifys Datenbank gespeicherten Definition, die **nicht** aus dem Repo
+  aufgefrischt wird. Ausweg nur: löschen und neu anlegen. *(25.08.2026 — ein Deployment scheiterte an
+  einem Mount, den der deployte Commit gar nicht mehr enthielt.)*
+- **Keine Bind-Mounts mit relativen Pfaden.** Coolify legt das Repo nicht dort ab, wohin sie zeigen;
+  Docker erzeugt die fehlende Quelle als Verzeichnis und bricht ab. Dateien ins Abbild **kopieren**.
+- **Der DNS-Check ist reine Anzeige.** `blog` läuft und zeigt „DNS pending".
+- **`tls=true` ohne certresolver** trägt nur, weil Cloudflare davor terminiert. Eine Domain auf
+  „DNS only" zu stellen bricht das.
+
+### Offen
+
+Der Zustand ist eine halbfertige Migration: Websites auf Coolify, Proxy nicht. Solange das so bleibt,
+kostet jede Subdomain acht Zeilen Handarbeit. Coolify einen eigenen Proxy zu geben wäre die Abhilfe —
+berührt aber den Traefik, an dem n8n hängt.
+
+*(Belege: Einrichtung `framework.berent.ai` am 24./25.08.2026, sechs Fehlversuche; Ursache erst per
+SSH-Einsicht gefunden. Label-Vorlage vom laufenden `blog`-Container gelesen.)*
 
 ## 6 · Secrets-Politik (Kurzfassung — Details im systems-register.md)
 

@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-08-11 · v1.12 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-08-25 · v1.13 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -103,6 +103,21 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 - Nicht angebunden: HPCN (Exchange) — Frei/Belegt dort ungeprüft. Fantastical Openings
   (Flexibits, `office@berent.ai`) hat keine offene Schnittstelle; Sprechzeiten-Regeln nur gespiegelt.
 
+### A11 · Coolify — Hosting der berent.ai-Websites
+
+- Oberflaeche `coolify.berent.ai` (Cloudflare-proxied, **kein SSH darueber**). Version 4.1.2.
+- **Laeuft auf `srv1098810` — derselben Maschine wie n8n (A3), nicht auf einem eigenen Server.**
+  31 laufende Container, Ubuntu 24.04, Docker 29.6.2 (Stand 25.08.2026).
+- Traegt seit 07/2026 die berent.ai-Websites (21 Hosts, u. a. `www`, `blog`); Vercel ist fuer diese
+  Hosts aus dem Weg. `threema-decrypt` liegt weiterhin auf Vercel (A4).
+- **Proxy gehoert nicht Coolify:** `root-traefik-1` aus dem Compose-Projekt `root`, mit
+  `--providers.docker.exposedbydefault=false`. Container ohne Traefik-Labels sind unsichtbar;
+  Coolify schreibt fuer neue Anwendungen keine Labels. Vorgehen und Label-Vorlage:
+  `infrastructure-playbook.md` §5a.
+- TLS: Router mit `tls=true` **ohne** certresolver — traegt nur, weil Cloudflare davor terminiert.
+  Eine Domain auf „DNS only" zu stellen bricht das.
+- Zugang: SSH als `root` auf die IP des Servers, Schluessel siehe Verzeichnis unten.
+
 ---
 
 ## SECRET-VERZEICHNIS — ein Label, alle Speicherorte
@@ -130,6 +145,7 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | IMAP-Credentials (iCloud, IONOS) | ① n8n-Credential-Store (Ingestion) ② n8n-Container-Env `IMAP_ICLOUD_USER/PASS` + `IMAP_IONOS_USER/PASS` (+HOST) fuer den Aufraeum-Executor (Code-Node kann Credential-Store nicht lesen) | Ingestion-Trigger, Aufraeum-Executor |
 | `ICLOUD_CALDAV_USER` + `ICLOUD_CALDAV_APP_PASSWORD` (iCloud CalDAV) | ① n8n-Container-Env ② Passwortmanager | Kalender-Executor (`$env`, Code-Knoten) |
 | ~~n8n-Credential `iCloud CalDAV` (Basic Auth)~~ | n8n-Credential-Store — **angelegt, aber ungenutzt** seit 28.07. | reserviert für KAL-P4 (HTTP-Knoten, falls `REPORT` dort geht) |
+| SSH `id_ed25519_coolify` (ED25519, ohne Passphrase, Fingerabdruck `SHA256:bvMNUYnK…`) | ① Mac1 `~/.ssh/id_ed25519_coolify` (privat, 600) ② `srv1098810:/root/.ssh/authorized_keys` (oeffentlicher Teil) | Claude-Code-Sitzungen fuer lesende Diagnose auf dem Coolify-/n8n-Server. **Eigens fuer diesen Zweck, einzeln widerrufbar** — eine Zeile in `authorized_keys` entfernen genuegt, Marcus' eigener Zugang bleibt unberuehrt. Angelegt 25.08.2026 |
 | `N8N_API_KEY` | ① nr7/.env.local ② berent-ki-team-orga/.env.local (01.08.2026, Rechte 600, durch `*.local` gitignored) ③ n8n unter *Settings → n8n API* (Quelle; dort auch widerrufbar) | n8n-Verwaltung per API. **Neu 01.08.:** Claude Code liest damit Workflow-Stand und Execution-Daten. Selbstbeschränkung: lesen und aktualisieren ja, aktivieren und löschen nein — ein aktualisierter Workflow bleibt in dem Aktiv-Zustand, den Marcus gesetzt hat. Erster Schreibzugriff am 01.08. (Upload-Fix in beide Ingestion-Strecken, ORGA-76). **Falle:** Das PUT-Schema akzeptiert weniger `settings`-Felder als das GET zurückgibt — `callerPolicy`, `binaryMode`, `timeSavedMode`, `availableInMCP` müssen raus, sonst HTTP 400. |
 | `N8N_BASE_URL` (kein Geheimnis, aber Voraussetzung — deshalb hier) | ① Vercel nr7 Env (alle Umgebungen) ② nr7/.env.local ③ berent-ki-team-orga/.env.local · Wert = `https://n8n.srv1098810.hstgr.cloud` (A3) | NR7: `lib/data/n8n-provider.ts` (Executions fuers Lagebild), `lib/data/beirat-provider.ts`, und seit ORGA-129 `lib/data/durchsicht.ts` — die Schaltflaeche „Naechster Schwung“ auf `/mails`, die die Postfach-Durchsicht auf Zuruf startet, statt bis 03:00 zu warten. **Ohne Rueckfall-Wert**: fehlt die Variable, meldet die Schaltflaeche das im Klartext und startet nichts (fail-closed). `isN8nConfigured()` verlangt zusaetzlich `N8N_API_KEY` — die Durchsicht braucht ihn nicht, das Lagebild schon. |
 | `N8N_DONNA_WEBHOOK` (kein Geheimnis, aber ein Schalter — deshalb hier) | ① Vercel threema-decrypt Env (alle Umgebungen) ② Wert = Webhook-URL des n8n-Workflows `BERENT Donna-Dialog (*BERENTB)` | `api/beirat-callback.js`: leitet die ok-n-Syntax (`ok 3`, `nein 3`, `ok alle`, `widerruf 3`, `stopp`) an den Donna-Dialog. **Ohne Rueckfall-Wert**: fehlt die Variable, entfaellt der Zweig und der Text geht wie bisher an den Skill Executor (fail-closed). Reihenfolge beim Einrichten: erst den Workflow scharf schalten, dann die Variable setzen. |
@@ -218,3 +234,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-08-06 | v1.10 — `N8N_API_KEY`-Zeile aus dem Beirat-Spiegel **zurueckgeholt**: zweiter Speicherort (`berent-ki-team-orga/.env.local`), die Quelle (n8n *Settings → n8n API*), die Selbstbeschraenkung fuer Claude Code (lesen/aktualisieren ja, aktivieren/loeschen nein) und die PUT-Schema-Falle. Der SSoT kannte nur einen Speicherort. **Der Spiegel war erneut direkt editiert worden** — dieselbe Fehlerart wie am 27./28.07. (siehe v1.6/v1.7). Beim naechsten Mal faellt so eine Zeile still heraus. |
 | 2026-08-08 | v1.11 — `N8N_DONNA_WEBHOOK` aufgenommen (ORGA-136, Lernschleife Phase 3): Ziel-Webhook fuer die `ok n`-Antworten aus `*BERENTB`, Wert nur in Vercel, kein Rueckfall-Wert im Code. A5 um den dritten Router-Eintrag ergaenzt. **Zuerst hier im SSoT eingetragen, dann in den Beirat-Spiegel gezogen** — der Anlass steht in v1.10. |
 | 2026-08-11 | v1.12 — `N8N_BASE_URL` aufgenommen (ORGA-129): war seit dem Beirat produktiv in Gebrauch, stand aber in keinem Verzeichnis — wer sie suchte, fand sie nicht. Anlass war die Schaltflaeche „Naechster Schwung“ in NR7, die als dritter Konsument dazukam. Kein neuer Wert, nur die fehlende Zeile. |
+| 2026-08-25 | v1.13 — **A11 Coolify** aufgenommen: laeuft auf `srv1098810`, derselben Maschine wie n8n; Proxy gehoert nicht Coolify (`exposedbydefault=false`), Container ohne Labels sind unsichtbar. Dazu der SSH-Schluessel `id_ed25519_coolify` ins Verzeichnis. Beides fehlte seit dem Website-Umzug 07/2026 — 21 Hosts gingen live, ohne dass die Instanz irgendwo verzeichnet war. |
