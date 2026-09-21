@@ -1,7 +1,7 @@
 # Website-Motor — Leitplanken für KI-native Websites (BERENT)
 
 > Verbindlich für jede Website, die BERENT baut oder betreibt — die eigene und die von Kunden.
-> Stand: 2026-09-21 · v1.0 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` (Wirkung) ·
+> Stand: 2026-09-21 · v1.1 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` (Wirkung) ·
 > `infrastructure-playbook.md` §5a (wo es läuft) · `systems-register.md` (was zusammenhängt) · berent-ci-Skill (Aussehen).
 > Bauanleitung mit allen Stufen: Vault, `04 Ressourcen/Website-Motor/` (bis zur Ablage: `01 Inbox/ki-native-website-motor.md`).
 > Referenzumsetzung: `peerendees/berentai-nativ` (Beleg: Bau am 21.09.2026, Nachbau von www.berent.ai).
@@ -65,6 +65,32 @@ einen Vertrag — und alles danach deterministisch passiert. Zwei Fragen entsche
 - **Suche und Assistent zuletzt.** Sie bestimmen die Datenbankwahl nicht; bei ein paar hundert Absätzen reicht
   Volltext (Engineering §4.1).
 
+## 2a · Der Assistent auf der eigenen Website
+
+Ein Chat auf der Website ist kein Zusatz, sondern die Probe aufs Exempel: Er antwortet nur, wenn die Inhalte
+strukturiert vorliegen. Deshalb kommt er **zuletzt** — und nie, bevor die Seiten stehen.
+
+- **Nur aus dem eigenen Bestand.** Der Assistent liest ausschließlich die veröffentlichten Seiten. Steht die
+  Antwort dort nicht, sagt er das und nennt den nächstbesten Weg. „Weiß ich nicht“ ist eine gute Antwort;
+  eine erfundene ist ein Schaden.
+- **Keine Zahl ohne Beleg** (dieselbe Regel wie P2 mit anderen Mitteln): kein Preis, kein Termin, keine
+  Adresse, die nicht wörtlich in einem Auszug steht. Kontaktwege kommen aus der Faktendatei, nicht aus dem Modell.
+- **Quellen unter jeder Antwort.** Das ist keine Zierde, sondern die Art, wie ein Leser eine Erfindung erkennt.
+- **Kein Vektordienst, solange Volltext reicht.** Bei einer Website mit ein paar hundert Absätzen ist der
+  Index eine Sache von Millisekunden; der Engpass ist das Modell, nicht die Suche. Erst bei Zehntausenden
+  Absätzen lohnt eine Datenbank mit Vektoren — und das ist ein Umzug, kein Umbau.
+- **Rechtliches raus aus dem Index.** Impressum, Datenschutz und Danke-Seiten verwässern jede Antwort.
+- **Deckel und Ausfall** (Engineering §2.5, §2.6): Fragenlänge, Gesprächslänge, Fragen je Adresse und je Tag,
+  Timeout. Fällt das Modell aus, erscheint eine ehrliche Meldung — die Website bleibt vollständig bedienbar.
+- **Datenschutz:** Die Fragen gehen an einen Anbieter außerhalb des Hauses. Das gehört in die
+  Datenschutzerklärung, bevor der Knopf erscheint, samt Hinweis am Eingabefeld, keine personenbezogenen
+  Daten einzugeben. Keine IP-Adresse im Protokoll.
+- **Fragen ohne Antwort sind der Themenplan.** Jede Frage, zu der der Assistent nichts findet, ist eine
+  Lücke im Inhalt — sichtbar im Cockpit, nicht in einer Logdatei.
+
+*(Beleg: Assistent für berent.ai, 21.09.2026 — Vorbild war ein Chat auf einer fremden Website, übernommen wurde
+das Verfahren, nicht die Ausformulierung; Playbook §10.)*
+
 ## 3 · Abnahme — die Website ist fertig, wenn alles davon stimmt
 
 - [ ] Jede Seite antwortet mit 200, mit und ohne Schrägstrich; alte Adressen leiten per 301, keine ins Leere
@@ -79,6 +105,8 @@ einen Vertrag — und alles danach deterministisch passiert. Zwei Fragen entsche
 - [ ] `node --test` läuft grün ohne Datenbank-Server und ohne Schlüssel; frischer Klon startet mit `npm i && npm start`
 - [ ] Ein neuer Seitentyp kostet einen Ordner, keine Änderung am Motor
 - [ ] `docs/entscheidungen.md` beschreibt noch, was tatsächlich gebaut wurde
+- [ ] **Mit Assistent:** auf eine Frage, deren Antwort nirgends steht, sagt er „weiß ich nicht“ — und jede
+      Antwort nennt ihre Quelle
 
 ---
 
