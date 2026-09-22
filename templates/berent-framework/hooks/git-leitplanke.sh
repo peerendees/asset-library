@@ -14,11 +14,15 @@
 # das Verweigern steckt in der Antwort, nicht im Status.
 #
 # Bewusst NICHT blockiert: `gh pr merge` (der vorgesehene Weg), `git merge origin/main` auf einem
-# Feature-Zweig (so wird ein Zweig nachgezogen), `git commit --dry-run`, alles ausserhalb von git —
+# Feature-Zweig (so wird ein Zweig nachgezogen), das Vorspulen von main auf `origin/main` oder mit
+# `--ff-only` (nach einem Merge auf GitHub holt man den Stand nach, ohne Historie zu erzeugen),
+# `git commit --dry-run`, alles ausserhalb von git —
 # und Text, der ueber git redet, ohne git aufzurufen (Commit-Botschaften, Pull-Request-Rumpf,
 # Dokumentation). Genau daran ist die erste Fassung am 22.09.2026 gescheitert: Sie las die ganze
 # Befehlszeile, also auch den Rumpf eines Here-Dokuments, und hielt eine Tabellenzeile ueber
-# Force-Push fuer einen Force-Push.
+# Force-Push fuer einen Force-Push. Und am selben Tag ein zweites Mal: Sie verweigerte
+# `git merge --ff-only origin/main` auf main — also genau das Nachholen eines Stands, den GitHub
+# schon gemergt hatte. Ein Waechter, der die richtige Bewegung blockiert, wird umgangen.
 #
 # Ueberstimmen, wenn es wirklich sein muss: den Befehl selbst im Terminal ausfuehren. Der Hook greift
 # nur fuer Claude, nicht fuer den Menschen.
@@ -89,7 +93,18 @@ while IFS= read -r abschnitt; do
       esac
       ;;
     merge)
-      [ "$auf_main" = true ] && merge_auf_main=true
+      # Auf main ist nur das Vorspulen erlaubt: nach einem Merge auf GitHub holt man den Stand nach,
+      # ohne eigene Historie zu erzeugen. Alles andere waere ein lokaler Merge.
+      if [ "$auf_main" = true ]; then
+        nur_vorspulen=false
+        for wort in $rest; do
+          case "$wort" in
+            --ff-only) nur_vorspulen=true ;;
+            origin/main|origin/master|"@{u}"|"@{upstream}") nur_vorspulen=true ;;
+          esac
+        done
+        [ "$nur_vorspulen" = false ] && merge_auf_main=true
+      fi
       ;;
     push)
       hat_refspec=false
