@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-09-22 · v1.6 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-09-22 · v1.7 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -52,11 +52,16 @@
   Befehl `"$HOME/.claude/hooks/git-leitplanke.sh"`. Der Hook verweigert Claude vier Dinge: committen auf
   `main`, pushen nach `main`, jeden Force-Push und `git merge`, solange `main` ausgecheckt ist. Die
   Fehlermeldung nennt jeweils den richtigen Weg. Erlaubt bleiben `gh pr merge`, `git merge origin/main`
-  auf einem Feature-Zweig und `git commit --dry-run`. Ein Mensch im Terminal ist nicht betroffen.
+  auf einem Feature-Zweig, das **Vorspulen von `main`** (`git pull --ff-only`, `git merge --ff-only
+  origin/main`) nach einem Merge auf GitHub, und `git commit --dry-run`. Ein Mensch im Terminal ist
+  nicht betroffen.
   *(Beleg: Am 22.09.2026 landete ein Doku-Nachtrag trotz dreier schriftlicher Regeln direkt auf `main`.
   Eine Regel, die niemand durchsetzt, ist eine Bitte. Zweiter Beleg aus derselben Sitzung: Die erste
   Fassung des Hooks las die ganze Befehlszeile und hielt eine Tabellenzeile ueber Force-Push in einem
-  Pull-Request-Rumpf fuer einen Force-Push — ein Waechter muss Befehle von Text unterscheiden.)*
+  Pull-Request-Rumpf fuer einen Force-Push — ein Waechter muss Befehle von Text unterscheiden. Dritter
+  Beleg, Stunden spaeter: Dieselbe Fassung verweigerte das Vorspulen von `main` nach einem Merge auf
+  GitHub. **Ein Waechter, der die richtige Bewegung blockiert, wird umgangen** — deshalb ist jede
+  Blockade hier eng gefasst und nennt den erlaubten Weg.)*
 - **Ein gestapelter Pull Request stirbt mit seinem Basiszweig.** Steht PR B auf dem Zweig von PR A,
   schliesst GitHub B stillschweigend, sobald A gemergt und sein Zweig geloescht wird. Vorher die Basis von
   B auf `main` umstellen (`gh pr edit <nr> --base main`) oder B danach neu eroeffnen.
