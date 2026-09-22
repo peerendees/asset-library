@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-09-21 · v1.5 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-09-22 · v1.6 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -40,6 +40,31 @@
 
   Wer auf einem veralteten Stand aufsetzt, merkt es erst beim Push — bei **versionierten Dokumenten** (`systems-register.md`, `ENGINEERING-PRINCIPLES.md`) vergibt er zusätzlich eine Versionsnummer zweimal. Auflösung: Rebase auf `origin/`, eigene Änderung umnummerieren; **nie** `--force`. Wer auf dem falschen Branch committet hat, holt den Commit per `git cherry-pick` auf `main` und setzt den fremden Branch mit `git branch -f <branch> origin/<branch>` auf den Remote-Stand zurück.
   *(Zwei Belege, beide 06.08.2026 asset-library. Erstens: lokales `main` lag 3 Commits zurück, `systems-register` v1.8 war remote bereits vergeben — dieselbe Datei trägt im Änderungsprotokoll schon einen v1.6-Eintrag „Zusammenführung zweier auseinandergelaufener Fassungen". Zweitens, am selben Tag: Divergenz zwar abgefragt, die Antwort aber nicht gelesen — und dazu auf einem längst gemergten PR-Branch statt auf `main` committet. Eine abgerufene Zahl, die niemand liest, ist keine Prüfung.)*
+- **Die Git-Regeln werden maschinell gehalten, nicht nur beschrieben.** `hooks/git-leitplanke.sh` liegt in
+  diesem Ordner und wird einmal je Rechner installiert:
+
+  ```bash
+  mkdir -p ~/.claude/hooks
+  cp hooks/git-leitplanke.sh ~/.claude/hooks/ && chmod +x ~/.claude/hooks/git-leitplanke.sh
+  ```
+
+  Dazu in `~/.claude/settings.json` unter `hooks.PreToolUse` ein Eintrag mit `matcher: "Bash"` und dem
+  Befehl `"$HOME/.claude/hooks/git-leitplanke.sh"`. Der Hook verweigert Claude vier Dinge: committen auf
+  `main`, pushen nach `main`, jeden Force-Push und `git merge`, solange `main` ausgecheckt ist. Die
+  Fehlermeldung nennt jeweils den richtigen Weg. Erlaubt bleiben `gh pr merge`, `git merge origin/main`
+  auf einem Feature-Zweig und `git commit --dry-run`. Ein Mensch im Terminal ist nicht betroffen.
+  *(Beleg: Am 22.09.2026 landete ein Doku-Nachtrag trotz dreier schriftlicher Regeln direkt auf `main`.
+  Eine Regel, die niemand durchsetzt, ist eine Bitte. Zweiter Beleg aus derselben Sitzung: Die erste
+  Fassung des Hooks las die ganze Befehlszeile und hielt eine Tabellenzeile ueber Force-Push in einem
+  Pull-Request-Rumpf fuer einen Force-Push — ein Waechter muss Befehle von Text unterscheiden.)*
+- **Ein gestapelter Pull Request stirbt mit seinem Basiszweig.** Steht PR B auf dem Zweig von PR A,
+  schliesst GitHub B stillschweigend, sobald A gemergt und sein Zweig geloescht wird. Vorher die Basis von
+  B auf `main` umstellen (`gh pr edit <nr> --base main`) oder B danach neu eroeffnen.
+  *(Zweimal belegt: nr7 #16 am 15.09.2026, berentai-nativ #2 am 22.09.2026.)*
+- **`gh pr merge` aus einem Arbeitsbaum heraus meldet einen Fehler, der keiner ist** — `fatal: 'main' is
+  already used by worktree`. Der Merge auf GitHub ist trotzdem gelaufen, nur das lokale Aufraeumen nicht.
+  Erst den Zustand auf GitHub nachsehen, dann Zweig und Arbeitsbaum von Hand entfernen — den Merge nicht
+  wiederholen. *(Beleg: berentai-nativ #3 am 22.09.2026.)*
 - **Commit pro Arbeitsschritt**, sprechende Botschaft (was + weshalb), Umlaute in Commit-Botschaften als ae/oe/ue.
 - **Push sofort** nach jedem abgeschlossenen Schritt (Remote = Backup + Wiederaufsetzpunkt).
 - **Tag pro Phase/Meilenstein** (`phase-1-fundament`).
