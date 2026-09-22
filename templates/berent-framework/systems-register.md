@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-08-25 · v1.13 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-09-21 · v1.14 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -120,6 +120,11 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 
 ---
 
+- **Anwendungen mit Dockerfile** (seit 21.09.2026): `berentai-nativ` -> `nativ.berent.ai` — der Website-Motor
+  (Express, SQLite auf Volume `/app/data`, Cockpit `/admin`). Bis zur Umschaltung traegt die Static-Anwendung
+  `berent.ai:main-…` weiter `berent.ai` und `www.berent.ai`; der Umzug ist ein Wechsel der Host-Regel
+  (`docs/betrieb/umschaltung-www.md` im Repo). Env-Labels siehe Secret-Verzeichnis.
+
 ## SECRET-VERZEICHNIS — ein Label, alle Speicherorte
 
 > **Zuständig: Ingo** (Infrastruktur & DevOps). Ihm fällt die Token-Pflege zu — Eintragung
@@ -149,6 +154,10 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | `N8N_API_KEY` | ① nr7/.env.local ② berent-ki-team-orga/.env.local (01.08.2026, Rechte 600, durch `*.local` gitignored) ③ n8n unter *Settings → n8n API* (Quelle; dort auch widerrufbar) | n8n-Verwaltung per API. **Neu 01.08.:** Claude Code liest damit Workflow-Stand und Execution-Daten. Selbstbeschränkung: lesen und aktualisieren ja, aktivieren und löschen nein — ein aktualisierter Workflow bleibt in dem Aktiv-Zustand, den Marcus gesetzt hat. Erster Schreibzugriff am 01.08. (Upload-Fix in beide Ingestion-Strecken, ORGA-76). **Falle:** Das PUT-Schema akzeptiert weniger `settings`-Felder als das GET zurückgibt — `callerPolicy`, `binaryMode`, `timeSavedMode`, `availableInMCP` müssen raus, sonst HTTP 400. |
 | `N8N_BASE_URL` (kein Geheimnis, aber Voraussetzung — deshalb hier) | ① Vercel nr7 Env (alle Umgebungen) ② nr7/.env.local ③ berent-ki-team-orga/.env.local · Wert = `https://n8n.srv1098810.hstgr.cloud` (A3) | NR7: `lib/data/n8n-provider.ts` (Executions fuers Lagebild), `lib/data/beirat-provider.ts`, und seit ORGA-129 `lib/data/durchsicht.ts` — die Schaltflaeche „Naechster Schwung“ auf `/mails`, die die Postfach-Durchsicht auf Zuruf startet, statt bis 03:00 zu warten. **Ohne Rueckfall-Wert**: fehlt die Variable, meldet die Schaltflaeche das im Klartext und startet nichts (fail-closed). `isN8nConfigured()` verlangt zusaetzlich `N8N_API_KEY` — die Durchsicht braucht ihn nicht, das Lagebild schon. |
 | `N8N_DONNA_WEBHOOK` (kein Geheimnis, aber ein Schalter — deshalb hier) | ① Vercel threema-decrypt Env (alle Umgebungen) ② Wert = Webhook-URL des n8n-Workflows `BERENT Donna-Dialog (*BERENTB)` | `api/beirat-callback.js`: leitet die ok-n-Syntax (`ok 3`, `nein 3`, `ok alle`, `widerruf 3`, `stopp`) an den Donna-Dialog. **Ohne Rueckfall-Wert**: fehlt die Variable, entfaellt der Zweig und der Text geht wie bisher an den Skill Executor (fail-closed). Reihenfolge beim Einrichten: erst den Workflow scharf schalten, dann die Variable setzen. |
+| `ADMIN_PASSWORD` (berentai-nativ) | ① Coolify-Env der Anwendung `berentai-nativ` ② Passwortmanager „berentai-nativ Cockpit" ③ lokal `berentai-nativ/.env` (Eigenwert fuer die Entwicklung, NICHT der Live-Wert) | Cockpit-Login `/admin`. **Fail-closed:** fehlt der Wert (oder `SESSION_SECRET`), ist das Cockpit zu, die Website laeuft. Eingetragen 21.09.2026, vor dem Anlegen in Coolify |
+| `SESSION_SECRET` (berentai-nativ) | ① Coolify-Env ② Passwortmanager (gleicher Eintrag) ③ lokal `.env` (Eigenwert) | signiert die Sitzungs-Cookies des Cockpits; ein Wechsel meldet alle ab |
+| `ANTHROPIC_API_KEY` (berentai-nativ, optional) | ① Coolify-Env ② Anthropic Console (Quelle) | Generator (Stufe 4). Ohne Wert ist der Generator abgeschaltet, alles andere laeuft |
+| `FORM_WEBHOOK_URL` (kein Geheimnis, aber ein Schalter — deshalb hier) | ① Coolify-Env · Wert = n8n-Webhook fuer Anfragen | Benachrichtigung bei neuen Anfragen; ohne Wert nur Speicherung in der Tabelle `submissions`. **Zuerst speichern, dann melden** — ein Ausfall verliert nichts |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
 | `BEIRAT_VAULT_TOKEN` (GitHub PAT, contents:write nur auf berent-2nd-brain) | n8n-Container-Env + Passwortmanager | Beirat-Vault-Export · Skill Executor/`donna/idee` (bevorzugt, da nachweislich gültig) |
@@ -235,3 +244,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-08-08 | v1.11 — `N8N_DONNA_WEBHOOK` aufgenommen (ORGA-136, Lernschleife Phase 3): Ziel-Webhook fuer die `ok n`-Antworten aus `*BERENTB`, Wert nur in Vercel, kein Rueckfall-Wert im Code. A5 um den dritten Router-Eintrag ergaenzt. **Zuerst hier im SSoT eingetragen, dann in den Beirat-Spiegel gezogen** — der Anlass steht in v1.10. |
 | 2026-08-11 | v1.12 — `N8N_BASE_URL` aufgenommen (ORGA-129): war seit dem Beirat produktiv in Gebrauch, stand aber in keinem Verzeichnis — wer sie suchte, fand sie nicht. Anlass war die Schaltflaeche „Naechster Schwung“ in NR7, die als dritter Konsument dazukam. Kein neuer Wert, nur die fehlende Zeile. |
 | 2026-08-25 | v1.13 — **A11 Coolify** aufgenommen: laeuft auf `srv1098810`, derselben Maschine wie n8n; Proxy gehoert nicht Coolify (`exposedbydefault=false`), Container ohne Labels sind unsichtbar. Dazu der SSH-Schluessel `id_ed25519_coolify` ins Verzeichnis. Beides fehlte seit dem Website-Umzug 07/2026 — 21 Hosts gingen live, ohne dass die Instanz irgendwo verzeichnet war. |
+| 2026-09-21 | v1.14 — **A11 ergaenzt:** Dockerfile-Anwendung `berentai-nativ` (`nativ.berent.ai`, spaeter `www`) und vier Env-Labels im Secret-Verzeichnis (`ADMIN_PASSWORD`, `SESSION_SECRET`, `ANTHROPIC_API_KEY`, `FORM_WEBHOOK_URL`) — **vor** dem Anlegen in Coolify eingetragen (Anleitung Punkt 4). Anlass: Bau des Website-Motors, Nachbau von www.berent.ai. |

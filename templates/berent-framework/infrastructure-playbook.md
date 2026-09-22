@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-08-25 · v1.4 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-09-21 · v1.5 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -155,6 +155,38 @@ berührt aber den Traefik, an dem n8n hängt.
 
 *(Belege: Einrichtung `framework.berent.ai` am 24./25.08.2026, sechs Fehlversuche; Ursache erst per
 SSH-Einsicht gefunden. Label-Vorlage vom laufenden `blog`-Container gelesen.)*
+
+### Node-Anwendungen mit Dockerfile (seit 21.09.2026)
+
+Das Hausmuster *Static + nginx* trägt Seiten aus Dateien. Ein laufendes Programm (Website-Motor, fedor-seo)
+braucht die Bauart **Dockerfile** — und vier Dinge, die beim Static-Muster nicht vorkommen:
+
+1. **Port in den Labels:** letzte Zeile `traefik.http.services.NAME-svc.loadbalancer.server.port=3000`
+   (der Port, auf dem der Prozess lauscht), sonst wie die Vorlage oben.
+2. **Laufzeitdaten auf ein benanntes Volume** (*Persistent Storage → Add Volume*, z. B. `/app/data`), nie ein
+   Host-Pfad: Der Container läuft als `node`, ein Bind-Mount gehört `root`, SQLite könnte nicht schreiben.
+   Ein leeres benanntes Volume übernimmt die Rechte aus dem Abbild.
+3. **`/health` nennt den Bauzeitpunkt** (`gebaut`, im Dockerfile per `date` ins Abbild geschrieben). „Ist mein
+   Push schon live?" beantworten fünf gleiche Antworten in Folge — beim Redeploy laufen kurz zwei Container.
+4. **Env vor dem ersten Start eintragen** (fail-closed: ohne Kennwort und Geheimnis ist ein Cockpit zu), Labels
+   dazu ins `systems-register.md`.
+
+Referenz: `peerendees/berentai-nativ`, `docs/betrieb/deploy-coolify.md`.
+
+### Woher weiß ich, wer ausliefert?
+
+**Nicht aus dem Repository.** `vercel.json`, eine `CLAUDE.md` mit „Deployment: Vercel" oder eine `.htaccess`
+beschreiben, was einmal war. Am lebenden Objekt prüfen:
+
+```bash
+curl -sI https://www.berent.ai/ | grep -i -E "^(server|x-vercel|cf-ray)"   # server: cloudflare ohne x-vercel-id = Coolify-Weg
+dig +short www.berent.ai A && dig +short blog.berent.ai A                    # gleiche IPs wie ein bekannter Coolify-Host?
+node tools/coolify.mjs apps | grep berent.ai                                 # steht die Domain an einer Coolify-Anwendung?
+```
+
+*(Beleg: `www.berent.ai` galt bis zum 21.09.2026 als Vercel-Deployment und lief seit 07/2026 über Coolify.
+Die „Störung" vom 02.08.2026 — fehlende Header, `/faq` 404 — war kein Cloudflare-Cache, sondern ein anderer
+Hoster, auf dem die `vercel.json` nie galt. Zwei Sessions suchten am falschen Ort.)*
 
 ## 6 · Secrets-Politik (Kurzfassung — Details im systems-register.md)
 
