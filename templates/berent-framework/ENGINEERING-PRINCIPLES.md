@@ -4,7 +4,7 @@
 > Diese Datei ist eine KI-Anweisungsdatei. Sie wird in jedes Projekt gelegt und sorgt dafür, dass Claude Code
 > Software baut, die **unbeaufsichtigt läuft und nicht bricht** — nachts um 03:00, ohne dass jemand zuschaut.
 >
-> Stand: 2026-08-08 · v1.3
+> Stand: 2026-08-14 · v1.4
 > Schwester-Dokumente: `infrastructure-playbook.md` (wo es läuft) · `systems-register.md` (was zusammenhängt) ·
 > berent-ci-Skill (wie es aussieht) · belegchat-security-Skill (Sicherheits-Checkliste vor Deploy/Push).
 >
@@ -271,6 +271,55 @@ nicht verdrahtetes Quality Gate — nur billiger zu vermeiden.
 
 ---
 
+## 6 · Wirklichkeit schlägt Dokumentation
+
+### 6.1 Zustand fremder Systeme wird gemessen, nicht nachgeschlagen
+
+**IMMER** gegen das laufende System prüfen, bevor über dessen Zustand geredet wird.
+**NIE** aus einem Dokument ableiten, was gebaut ist, läuft oder fehlt.
+
+Dokumentation beschreibt den Stand ihres Entstehens, nicht den von heute. Bei fremden
+Systemen liegen dazwischen regelmäßig Wochen — und niemand schickt eine Benachrichtigung,
+wenn er etwas fertiggestellt hat.
+
+(Beleg: SEO-Andockung, 08/2026. Einem Auftraggeber wurde mitgeteilt, zwei Schnittstellen
+seien nicht gebaut und müssten erst entstehen. Grundlage war die Statustabelle in seinem
+eigenen Übergabedokument, datiert eine Woche vor dem Commit, mit dem beide live gingen.
+Gemessen waren **alle sieben** Vertragsbausteine seit drei Wochen in Produktion. Ein
+einziger Aufruf hätte `401` statt `404` gezeigt. Der Schaden war nicht technisch — es war
+die Fremdscham gegenüber jemandem, dem man etwas abverlangt, das er längst geliefert hat.)
+
+**Die Unterscheidung, an der es scheiterte:**
+
+| Antwort | Bedeutung |
+|---|---|
+| `401`, `403` | existiert, verlangt nur Anmeldung |
+| `400`, `405`, `422` | Pfad existiert, Anfrage war unvollständig |
+| `2xx` | existiert und antwortet |
+| `404`, `501` | nicht gebaut — **nur hier** ist die Aussage zulässig |
+| alles andere, keine Antwort | **unklar** — kein Befund, von Hand ansehen |
+
+Ein „unklar" ist kein Ergebnis. Wer es als „fehlt" meldet, hat geraten.
+
+### 6.2 Doppelte Absicherung: messen und belegen
+
+Eine Regel ohne Mechanismus ist totes Vokabular. Deshalb beides:
+
+**Messen.** Je Projekt ein Prüfskript, das jede fremde Schnittstelle abfragt und einen
+**datierten Beleg** schreibt. Es braucht kein Token — die Unterscheidung oben genügt.
+Die Tabelle gehört als Test ins Projekt: Wer die Logik ändert, muss die Tests ändern und
+stolpert dabei über die Begründung.
+
+**Belegen.** Jede Zustandsaussage über ein fremdes System — in einer Kundennachricht, einer
+Spezifikation, einem Gesprächsleitfaden — braucht einen Beleg, der **nicht älter als
+24 Stunden** ist. Fehlt er, lautet die zulässige Aussage **„nicht geprüft"**, nicht
+„existiert nicht".
+
+Gilt für jede Zustandsaussage über Fremdes, nicht nur für Schnittstellen: Läuft ein Dienst?
+Ist eine Domain umgezogen? Ist eine Einstellung gesetzt? **Nachsehen, nicht nachschlagen.**
+
+---
+
 ## 8 · Prinzipien-Briefing für Claude Code (kopierfertig)
 
 **IMMER:**
@@ -287,6 +336,7 @@ nicht verdrahtetes Quality Gate — nur billiger zu vermeiden.
 - Bei Kettenfehlern die kleinste Einheit isoliert testen; Secrets per Fingerprint vergleichen (3.3).
 - Secret-förmige Zeichenketten am Eingang erkennen, zurückweisen und die Rotation anstoßen — Rot, nicht Gelb (5.3).
 - Neue Paketversionen sieben Tage reifen lassen; beim Setzen der Regel die npm-Version prüfen, sonst greift sie stillschweigend nicht (5.4).
+- Zustand fremder Systeme messen, nie aus Doku ableiten; Aussagen brauchen einen Beleg < 24 h — sonst heißt es „nicht geprüft" (6.1–6.2).
 - Regeln vor Modell, billig vor teuer, Kontext minimal (4.1–4.2).
 - Commit pro Schritt, Push sofort, Tag pro Phase, Migrationen spiegeln (5.1).
 
@@ -296,6 +346,7 @@ nicht verdrahtetes Quality Gate — nur billiger zu vermeiden.
 - Ein Secret in Chat, Commit oder Log schreiben — oder rotieren, ohne alle Speicherorte nachzuziehen.
 - Ein **empfangenes** Secret weiterverarbeiten, speichern oder wiederholen, statt es zurückzuweisen und die Rotation anzustoßen (5.3).
 - Unbegrenzt abrufen oder unbegrenzt parallelisieren („hol alle 650“) auf Infrastruktur, die Produktion trägt.
+- Behaupten, eine fremde Schnittstelle sei nicht gebaut, ohne sie aufgerufen zu haben — `401` ist kein `404` (6.1).
 - Einem Modell-Output ungeprüft trauen oder ihn ungefiltert in die Datenbank schreiben.
 - Einen Batch als Alles-oder-nichts bauen.
 - Auf main experimentieren, wenn main auto-deployt.
@@ -314,6 +365,7 @@ nicht verdrahtetes Quality Gate — nur billiger zu vermeiden.
 - [ ] Erkennt der Eingang secret-förmige Zeichenketten, und ist der Rotationspfad hinterlegt? (5.3)
 - [ ] `min-release-age` gesetzt UND npm ≥ 11.10 — sonst ist die Regel blind? (5.4)
 - [ ] Braucht ein folgenreiches Ergebnis (Beträge, Empfehlungen, Rechtliches) die Zweitvalidierung? (2.8)
+- [ ] Aussagen über fremde Systeme durch einen Beleg < 24 h gedeckt? (6.2)
 - [ ] Execution-Log + Ergebnis-Benachrichtigung mit Zahlen?
 - [ ] Migrationen gespiegelt, Commits gepusht, Tag gesetzt?
 - [ ] belegchat-security-Checkliste durchlaufen (bei Deploy/Push Pflicht)?
