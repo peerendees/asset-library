@@ -115,6 +115,84 @@ Das `+` ist das zentrale Markenelement von BERENT.AI.
 
 ---
 
+## Produkt-Oberflächen (mediumgerecht)
+
+Festgelegt am 10.10.2026 am Beispiel des BelegChat-Cockpits.
+
+Für Web schreibt diese CI den dunklen Grund `#090806` und Lora als Fließtext vor. Das gilt
+für Auftritte — Landing Pages, Präsentationen, Seiten, die jemand ansieht. Ein **Arbeits-
+werkzeug** ist etwas anderes: Dort werden Zahlenkolonnen über Stunden gelesen, und eine
+Serifen-Lesetypo setzt Ziffern schlechter als eine Tabellenschrift.
+
+Es gilt dasselbe Prinzip wie bei DOCX: **CI über Farben und Formen, nicht über den
+Hintergrund.** Der dunkle Auftritt bleibt im Dunkelmodus erhalten.
+
+### Farben, heller Modus
+
+| Rolle | Hex | Hinweis |
+|---|---|---|
+| Hintergrund | `#FDFAF5` | warmes Off-White — **nie** `#FFFFFF` |
+| Karte | `#FFFDF9` | hebt sich minimal ab |
+| Fließtext | `#2A1A08` | dunkles Warmbraun |
+| Primär / Akzent | `#B5742A` | Kupfer — Schaltflächen, Links, Fokusring |
+| Sekundär / Muted | `#F5EFE4` | Champagne |
+| Sekundärtext | `#7A6A58` | Labels, Metainfo |
+| Akzentfläche | `#F0E6D4` | aktive Navigation |
+| Akzenttext | `#8D5A20` | dunkleres Kupfer |
+| Rahmen, Eingabefeld | `#E4DAC8` | |
+| Destruktiv | `#A33A2A` | warmes Rot statt des kalten Standardtons |
+
+### Farben, dunkler Modus
+
+Hier gilt die CI im Original: Grund `#090806`, Fließtext `#C4BCB1`, Karte `#110E0A`, Rahmen
+`#2A2118`, Akzent weiterhin Kupfer `#B5742A`, Sekundärtext `#9A8870`.
+
+### Status-Plaketten
+
+Drei Zustände, in beiden Modi unterscheidbar — Sandgold wartet, Salbei ist erledigt,
+Terrakotta ruft. Rot bleibt dem Klärungsfall vorbehalten und ist gedämpft: Er bedeutet
+Arbeit, nicht Gefahr.
+
+| Status | hell (Grund / Text) | dunkel (Grund / Text) |
+|---|---|---|
+| wartend | `#F2E4C6` / `#875713` | `#3A2E14` / `#E8C98A` |
+| erledigt | `#E4EBDD` / `#4A5D39` | `#24301D` / `#A8C48C` |
+| Klärung | `#F7E0D8` / `#9C3B26` | `#3D201A` / `#E0937F` |
+
+**Als CSS-Variablen führen, nicht als Utility-Klassen.** Ein `bg-green-100` aus einem
+Framework kennt den Dunkelmodus nicht und bringt zugleich einen kalten Ton in eine warme
+Oberfläche.
+
+### Typografie in Produkt-Oberflächen
+
+| Einsatz | Schrift | Hinweis |
+|---|---|---|
+| Überschriften | **Bebas Neue** | wie überall: Versalien, `letter-spacing: 0.06em` |
+| Fließtext und Tabellen | **Instrument Sans** | editorial und straff, bei 14 px noch ruhig |
+| Code, technische Labels | JetBrains Mono | |
+
+**Warum nicht Lora:** siehe oben — Lesetypo gegen Tabellenschrift.
+
+**Warum Instrument Sans:** Gewählt aus einem Sehvergleich bei 14 px im echten Tabellen-
+kontext. Verworfen wurden *Jost* (der Verlag-Linie am nächsten, aber `1 / l / I` laufen bei
+13 px zusammen — in einer Belegliste ein Risiko), *IBM Plex Sans* (die sichersten Ziffern,
+wirkt aber technisch statt edel) und *Manrope* (wärmer, dafür runder und breiter).
+
+**Verlag** (Hoefler & Co) ist kommerziell und pro Domain lizenziert — in Produkten nur
+einsetzbar, wo eine Lizenz für genau diese Domain vorliegt.
+
+Zahlen in Tabellen immer mit `font-variant-numeric: tabular-nums`, sonst springen die
+Spalten.
+
+### Signet im Produkt
+
+Hell: `be-farbe-v3.webp` (farbig). Dunkel: `be-sw-v3.webp` (grau-schwarz). **In dieser
+Richtung** — wie auf berent.ai. Das Signet wird auf die Höhe von Titel plus Untertitel
+gesetzt; die konkrete Pixelzahl gehört gemessen, nicht geschätzt, weil sie an den Metriken
+der Schrift hängt.
+
+---
+
 ## Design-Prinzipien
 
 1. **Wärme statt Kälte** – Warme Braun-Schwarz-Töne, keine kalten Grautöne
