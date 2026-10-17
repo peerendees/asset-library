@@ -112,7 +112,7 @@ dann nicht – die Regeln des jeweiligen CI ersetzen sie.
 
 ## Effektsprache
 
-Abgeleitet aus der Stilvorlage „Thomas Völker – KI-Keynote-Teaser“ (77 s, ~123 BPM):
+Abgeleitet aus einer Stilvorlage (KI-Keynote-Teaser eines Dritten, 77 s, ~123 BPM; liegt lokal in der Inbox):
 schwarzer Grund, eine Neonfarbe, harte Schnitte auf dem Downbeat, eine Aussage
 pro Bild. Übernommen wird die **Grammatik**, nicht das Aussehen: keine
 Sechsecke, kein Magenta, keine Montserrat, keine fremden Texte.

@@ -10,8 +10,8 @@ Messen von Tempo und Downbeat echter Musik. Details in `README.md`.
 
 **Versionen:** Remotion 4.0.534 exakt gepinnt (§5.4 „Abhängigkeiten reifen lassen“).
 
-**Herkunft:** Effektsprache abgeleitet aus einer Stilvorlage (Keynote-Teaser
-Thomas Völker, 2026) – übernommen wurden Schnitt- und Taktgrammatik, nicht
+**Herkunft:** Effektsprache abgeleitet aus einer Stilvorlage (KI-Keynote-Teaser
+eines Dritten, 2026) – übernommen wurden Schnitt- und Taktgrammatik, nicht
 Gestaltung, Texte oder Musik. Remotion-Muster nach `remotion-dev/skills`.
 
 **Änderungen**
