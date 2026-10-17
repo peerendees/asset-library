@@ -1,0 +1,38 @@
+/* HPCN-CI – Design-Tokens (Stand 17.10.2026)
+ * Quelle: Logo (Markenblau, Markengrau) und www.h-pcn.de (Navy, Mittelblau, Neutraltöne).
+ * Schriften lokal einbinden (fonts/), kein Google-Fonts-CDN in Produktion. */
+
+@font-face { font-family: "Inter"; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("../fonts/inter-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("../fonts/inter-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("../fonts/inter-latin-800-normal.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("../fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+:root {
+  /* Markenfarben */
+  --hpcn-markenblau: #3450ac;  /* Logo „H“ und „HEINRICH“ – 7,27:1 auf Weiß */
+  --hpcn-markengrau: #787878;  /* Logo „PCN“ – nur Logo/Grafik, als Text zu schwach (4,42:1) */
+  --hpcn-navy:       #003366;  /* Flächen, Überschriften – 12,61:1 auf Weiß */
+  --hpcn-mittelblau: #005c9e;  /* Links, Hover – 6,94:1 auf Weiß */
+
+  /* Neutraltöne (hell) */
+  --hpcn-weiss:      #ffffff;
+  --hpcn-grund-hell: #f3f4f6;
+  --hpcn-rand-hell:  #e5e7eb;
+  --hpcn-text:       #1f2937;
+  --hpcn-text-2:     #4b5563;
+
+  /* Dunkel (Video, Bühne, Dark Mode) */
+  --hpcn-grund-dunkel: #071a30;
+  --hpcn-karte-dunkel: #0c2a4d;
+  --hpcn-rand-dunkel:  #1e3f66;
+  --hpcn-akzent:       #7e9bf0;  /* Markenblau aufgehellt – 6,53:1 auf Grund dunkel */
+  --hpcn-akzent-hell:  #a9bdf7;  /* Glühkern */
+  --hpcn-text-dunkel:  #eef1f5;  /* 15,45:1 */
+  --hpcn-text-dunkel-2:#a7b0bd;  /* 7,99:1 */
+
+  --hpcn-schrift: "Inter", system-ui, sans-serif;
+  --hpcn-mono: "JetBrains Mono", ui-monospace, monospace;
+  --hpcn-radius: 0.5rem;
+}

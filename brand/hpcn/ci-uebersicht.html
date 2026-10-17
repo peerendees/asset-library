@@ -1,0 +1,63 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="tokens/hpcn-tokens.css">
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--hpcn-schrift);color:var(--hpcn-text);background:var(--hpcn-weiss);width:1600px}
+.hell{padding:64px 80px;background:var(--hpcn-weiss)}
+.kopf{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--hpcn-rand-hell);padding-bottom:28px;margin-bottom:40px}
+.kopf img{height:110px}
+.kopf h1{font-weight:800;font-size:44px;color:var(--hpcn-navy);letter-spacing:-.02em;text-align:right}
+.kopf p{font-family:var(--hpcn-mono);font-size:15px;color:var(--hpcn-text-2);text-align:right;margin-top:6px;letter-spacing:.08em}
+h2{font-family:var(--hpcn-mono);font-weight:700;font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:var(--hpcn-markenblau);margin:0 0 18px}
+.farben{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:44px}
+.f{border:1px solid var(--hpcn-rand-hell);border-radius:10px;overflow:hidden}
+.f div{height:88px}
+.f span{display:block;padding:12px 14px;font-size:15px;line-height:1.45}
+.f b{font-weight:700}.f code{font-family:var(--hpcn-mono);font-size:13px;color:var(--hpcn-text-2)}
+.typo{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:36px;margin-bottom:10px}
+.t1{font-weight:800;font-size:58px;letter-spacing:-.025em;color:var(--hpcn-navy);line-height:1.05}
+.t1 em{font-style:normal;color:var(--hpcn-markenblau)}
+.t2{font-size:19px;line-height:1.6;color:var(--hpcn-text)}
+.t3{font-family:var(--hpcn-mono);font-size:16px;line-height:1.7;color:var(--hpcn-text-2)}
+.dunkel{background:var(--hpcn-grund-dunkel);padding:56px 80px 64px;color:var(--hpcn-text-dunkel)}
+.dunkel h2{color:var(--hpcn-akzent)}
+.buehne{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.karte{aspect-ratio:16/9;border-radius:12px;position:relative;overflow:hidden;background:var(--hpcn-grund-dunkel);border:1px solid var(--hpcn-rand-dunkel);display:flex;flex-direction:column;justify-content:center;padding:0 56px}
+.karte .schein{position:absolute;inset:0;background:radial-gradient(ellipse 45% 50% at 95% 105%, #3450ac88, transparent 70%)}
+.kick{font-family:var(--hpcn-mono);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--hpcn-akzent);margin-bottom:14px;position:relative}
+.gross{font-weight:800;font-size:54px;letter-spacing:-.025em;line-height:1.05;position:relative}
+.gross em{font-style:normal;color:var(--hpcn-akzent-hell);text-shadow:0 0 10px #7e9bf0aa,0 0 30px #7e9bf066,0 0 70px #7e9bf033}
+.raster{display:grid;grid-template-columns:28px 28px;gap:5px;margin-bottom:22px;position:relative}
+.raster i{width:28px;height:28px;background:#4a5568;border-radius:3px}.raster i:first-child{background:var(--hpcn-akzent-hell);box-shadow:0 0 18px #7e9bf0aa}
+.voll{background:var(--hpcn-markenblau);border:none}
+.voll .gross{color:var(--hpcn-text-dunkel)}
+.fuss{display:flex;gap:28px;margin-top:22px;font-size:14px;color:var(--hpcn-text-dunkel-2);font-family:var(--hpcn-mono)}
+</style></head><body>
+<section class="hell">
+<div class="kopf"><img src="logo/hpcn-logo.svg" alt="HPCN"><div><h1>Corporate Identity</h1><p>HPCN · FASSUNG 1.0 · 17.10.2026</p></div></div>
+<h2>Farben</h2>
+<div class="farben">
+<div class="f"><div style="background:#3450ac"></div><span><b>Markenblau</b><br><code>#3450AC · Logo, Akzente · 7,27:1</code></span></div>
+<div class="f"><div style="background:#003366"></div><span><b>Navy</b><br><code>#003366 · Flächen, Titel · 12,61:1</code></span></div>
+<div class="f"><div style="background:#005c9e"></div><span><b>Mittelblau</b><br><code>#005C9E · Links, Hover · 6,94:1</code></span></div>
+<div class="f"><div style="background:#787878"></div><span><b>Markengrau</b><br><code>#787878 · nur Logo und Grafik</code></span></div>
+<div class="f"><div style="background:#1f2937"></div><span><b>Text</b><br><code>#1F2937 · Fließtext</code></span></div>
+<div class="f"><div style="background:#4b5563"></div><span><b>Text 2</b><br><code>#4B5563 · Sekundärtext</code></span></div>
+<div class="f"><div style="background:#f3f4f6"></div><span><b>Grund hell</b><br><code>#F3F4F6 · Seitengrund</code></span></div>
+<div class="f"><div style="background:#7e9bf0"></div><span><b>Akzent dunkel</b><br><code>#7E9BF0 · nur auf Dunkel · 6,53:1</code></span></div>
+</div>
+<h2>Schrift</h2>
+<div class="typo">
+<div class="t1">Branchenlösung trifft <em>KI.</em></div>
+<div class="t2"><b>Inter</b> 400 / 600 / 700 / 800 – Überschriften 800 mit −0,02em Laufweite, Fließtext 400. Nah an der Helvetica des Logos und an der Systemschrift der Website, frei lizenziert (OFL).</div>
+<div class="t3">JetBrains Mono 700<br>KICKER · KENNUNGEN · CODE<br>IBM i · Power i · RPG</div>
+</div>
+</section>
+<section class="dunkel">
+<h2>Video und Bühne</h2>
+<div class="buehne">
+<div class="karte"><div class="schein"></div><div class="raster"><i></i><i></i><i></i><i></i></div><div class="kick">M-HIS · IBM POWER i</div><div class="gross">Ihr ERP ist bewährt.<br><em>Jetzt wird es klug.</em></div></div>
+<div class="karte voll"><div class="kick" style="color:#eef1f5">KERNAUSSAGE</div><div class="gross">Aus Erfahrung.<br>Mit KI.</div></div>
+</div>
+<div class="fuss"><span>Grund #071A30</span><span>Karte #0C2A4D</span><span>Rand #1E3F66</span><span>Text #EEF1F5</span><span>Glühkern #A9BDF7</span><span>Markenzeichen: 2×2-Raster aus dem Logo</span></div>
+</section>
+</body></html>
