@@ -81,7 +81,8 @@ Trenner, Ladeanimation, Knoten im Netzwerk-Hintergrund („Network“ im Namen).
 
 ## Video (mit `/remotion`)
 
-- Fertige HPCN-Variante: `templates/hpcn-remotion-vorlage` (M-HIS-Teaser als Beispiel).
+- Fertige HPCN-Variante: `templates/hpcn-remotion-vorlage` (M-HIS-Teaser als Beispiel),
+  lokal `/Users/Shared/Projekte/Entwicklung/Projekte/videoschnitt/hpcn-remotion-vorlage`.
   Sonst die BERENT-Vorlage kopieren, `src/ci/tokens.ts` durch `tokens/hpcn-tokens.ts`
   ersetzen, Schriften aus `fonts/` nach `public/fonts` legen, `src/ci/schriften.ts`
   auf Inter umstellen.
@@ -94,6 +95,10 @@ Trenner, Ladeanimation, Knoten im Netzwerk-Hintergrund („Network“ im Namen).
 - Ton: sachlich, IBM-i-Kundschaft und Mittelstand – weniger Neon, mehr Ruhe als bei BERENT.
   Tempo eher 100–115 BPM.
 - Abspann: Negativ-Logo, www.h-pcn.de, keine BERENT-Elemente.
+- M-HIS-Inhalte nur belegt verwenden: Modulares Handels-Informations-System auf
+  IBM Power i, für Baumaschinenhandel, Werkstätten, technischen Handel und Vermietung;
+  Auftragsabwicklung und Kostenauswertung. Keine KI-Funktionen, Release-Stände oder
+  Kundenzahlen behaupten, solange sie nicht bestätigt sind.
 
 ## Pflichtangaben
 
