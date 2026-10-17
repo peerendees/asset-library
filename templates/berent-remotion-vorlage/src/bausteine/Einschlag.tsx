@@ -15,7 +15,7 @@ type Props = {
 
 /**
  * Ein Wort schlägt groß und unscharf ein und rastet scharf ein.
- * Akzent-Variante: Kupfer mit starkem Glühen (Gegenstück zum Neon-„DO.“).
+ * Akzent-Variante: Kupfer mit starkem Glühen.
  */
 export const Einschlag: React.FC<Props> = ({
   text,

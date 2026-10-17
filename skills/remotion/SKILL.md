@@ -110,6 +110,9 @@ Kundenvideo oder eigene Marke (z. B. Trutzburg AI mit eigenem CI): nur
 `tokens.ts` und `public/fonts` tauschen, Bausteine bleiben. Die Gold-Regel gilt
 dann nicht – die Regeln des jeweiligen CI ersetzen sie.
 
+Fertige Variante: **HPCN** (`templates/hpcn-remotion-vorlage`, Skill `hpcn-ci`) –
+Inter statt Bebas, Markenblau statt Kupfer, 2×2-Raster statt Plus, 112 BPM.
+
 ## Effektsprache
 
 Abgeleitet aus einer Stilvorlage (KI-Keynote-Teaser eines Dritten, 77 s, ~123 BPM; liegt lokal in der Inbox):

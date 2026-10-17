@@ -32,7 +32,7 @@ const zerlege = (text: string): Wort[] => {
 
 /**
  * Satz mit Wort-für-Wort-Einlauf und Hervorhebung.
- * Betonte Wörter: Kupfer + Glühen – das Gegenstück zum Neon-Akzentwort der Vorlage.
+ * Betonte Wörter: Kupfer + Glühen.
  */
 export const Satz: React.FC<Props> = ({
   text,
