@@ -1,7 +1,7 @@
 # HPCN Remotion-Vorlage
 
 Startprojekt für Videos im HPCN-CI, gehört zu den Skills `remotion` und `hpcn-ci`.
-Beispiel: 30-s-Teaser für M-HIS (112 BPM, acht Szenen). Bausteine wie die
+Beispiel: 30-s-Teaser für M-HIS (96 BPM, Erzählform Arbeitsplatz) – Anschauung, keine Schablone. Bausteine wie die
 BERENT-Vorlage, Markenelemente ersetzt (Raster, Netzwerk, Quadratrahmen).
 Details in `README.md`.
 
