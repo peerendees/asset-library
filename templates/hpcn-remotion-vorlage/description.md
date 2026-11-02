@@ -12,3 +12,4 @@ Details in `README.md`.
 | Version | Datum | Was |
 |---|---|---|
 | 1.0 | 17.10.2026 | Erstfassung mit M-HIS-Teaser |
+| 1.1 | 02.11.2026 | Neues M-HIS-Beispiel mit eigener Erzählform, Bausteine Nachricht, Maske, Leitstrahl |
