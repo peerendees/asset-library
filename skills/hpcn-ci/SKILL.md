@@ -95,7 +95,7 @@ Trenner, Ladeanimation, Knoten im Netzwerk-Hintergrund („Network“ im Namen).
 - Lichtblitz in `#EEF1F5`, Farbblitz in Markenblau, Vollflächen in Markenblau oder
   Navy mit heller Schrift.
 - Ton: sachlich, IBM-i-Kundschaft und Mittelstand – weniger Neon, mehr Ruhe als bei BERENT.
-  Tempo eher 100–115 BPM.
+  Tempo eher 95–115 BPM, je Video aus dem Inhalt festlegen.
 - Abspann: Negativ-Logo, www.h-pcn.de, keine BERENT-Elemente.
 - M-HIS-Inhalte nur belegt verwenden: Modulares Handels-Informations-System auf
   IBM Power i, für Baumaschinenhandel, Werkstätten, technischen Handel und Vermietung;
