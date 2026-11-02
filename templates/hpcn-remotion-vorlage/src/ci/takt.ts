@@ -1,14 +1,14 @@
 /**
  * Taktraster. Schnitte, Einschläge und Blitze liegen auf Zählzeiten der Musik.
  *
- * HPCN: 112 BPM bei 30 fps – ruhiger als BERENT. 1 Schlag ≈ 16,07 Frames,
- * 1 Takt ≈ 2,14 s, 30 s = genau 14 Takte. `schlag()` rundet je Schlag, kein Driften.
+ * Dieses Video: 96 BPM bei 30 fps. 1 Schlag = 18,75 Frames,
+ * 1 Takt = 2,5 s, 30 s = 12 Takte. `schlag()` rundet je Schlag, kein Driften.
  *
  * Bei einem echten Musikstück: BPM und Versatz des ersten Downbeats mit
  * `python3 scripts/takt-analyse.py <datei>` messen und hier eintragen.
  */
 export const TAKT = {
-  bpm: 112,
+  bpm: 96,
   /** Sekunden bis zum ersten Downbeat im Musikstück. */
   versatz: 0,
   schlaegeProTakt: 4,

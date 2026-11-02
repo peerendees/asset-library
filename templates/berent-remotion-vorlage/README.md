@@ -31,8 +31,8 @@ npx remotion render BerentTeaser out/mein-video.mp4
 | `src/ci/schriften.ts` | Lädt Bebas Neue, Instrument Sans, JetBrains Mono lokal aus `public/fonts` |
 | `src/ci/takt.ts` | Taktraster: `takt(n)`, `schlag(n)`, `takte(n)`, `puls()` |
 | `src/bausteine/` | Effekt-Bausteine (siehe unten) |
-| `src/szenen/` | Acht Beispielszenen, jede einzeln im Studio öffnenbar |
-| `src/BerentTeaser.tsx` | 30-s-Beispiel: Szenen als `<Sequence>`, Blitze, Musik |
+| `src/szenen/` | Acht Beispielszenen zur Anschauung, **keine Schablone** – jedes Video bekommt eine eigene Szenenfolge (Skill `remotion`, „Aufbau“) |
+| `src/BerentTeaser.tsx` | 30-s-Beispiel, wie Szenen als `<Sequence>` mit Blitzen und Musik zusammenspielen – Technik zum Abschauen, nicht die Reihenfolge |
 | `public/musik/` | `taktspur-120bpm.wav` = synthetischer Platzhalter |
 | `scripts/taktspur.py` | Erzeugt Platzhalter-Musik für beliebiges Tempo/Länge |
 | `scripts/takt-analyse.py` | Misst BPM und ersten Downbeat eines echten Musikstücks |
@@ -49,8 +49,8 @@ npx remotion render BerentTeaser out/mein-video.mp4
 | `Satz` | Wort-für-Wort-Einlauf, `*Hervorhebung*` in Kupfer mit Glühen |
 | `Einschlag` | Wort schlägt groß und unscharf ein, rastet scharf ein |
 | `Blitz` | Lichtblitz (Champagne) oder Farbblitz (Kupfer) auf dem Schlag |
-| `Kicker` | Überzeile in JetBrains Mono, gesperrt: „FRAGE 01“ |
-| `PlusRahmen` | Drehende Plus-Umrisse und Geisterzahl für Kapitelmarken |
+| `Kicker` | Überzeile in JetBrains Mono, gesperrt, beschreibend (z. B. „EINGANGSRECHNUNG“) – nie nummeriert |
+| `PlusRahmen` | Drehende Plus-Umrisse als Übergang; die Geisterzahl nur, wenn eine Zahl wirklich Inhalt ist |
 | `Ablauf` | Prozesskette mit wanderndem Lichtpunkt |
 | `Scanner` | Lichtlinie verwandelt Daten (Klartext → Platzhalter) |
 

@@ -90,15 +90,20 @@ Trenner, Ladeanimation, Knoten im Netzwerk-Hintergrund („Network“ im Namen).
   damit die Bausteine unverändert laufen.
 - Ersetze in den Szenen: `PlusZeichen` → Raster (2×2), `PlusNetz` → Netz mit
   quadratischen Knoten, `PlusRahmen` → ineinanderliegende, drehende Quadrate.
-- Lichtblitz in `#EEF1F5`, Farbblitz in Markenblau, Kernaussage auf Markenblau-
-  oder Navy-Vollfläche mit heller Schrift.
+- **Aufbau je Video aus dem Inhalt** (siehe Skill `remotion`, „Aufbau“): keine
+  nummerierten Überzeilen, keine feste Szenenfolge, kein Übernehmen früherer Videos.
+- Lichtblitz in `#EEF1F5`, Farbblitz in Markenblau, Vollflächen in Markenblau oder
+  Navy mit heller Schrift.
 - Ton: sachlich, IBM-i-Kundschaft und Mittelstand – weniger Neon, mehr Ruhe als bei BERENT.
-  Tempo eher 100–115 BPM.
+  Tempo eher 95–115 BPM, je Video aus dem Inhalt festlegen.
 - Abspann: Negativ-Logo, www.h-pcn.de, keine BERENT-Elemente.
 - M-HIS-Inhalte nur belegt verwenden: Modulares Handels-Informations-System auf
   IBM Power i, für Baumaschinenhandel, Werkstätten, technischen Handel und Vermietung;
-  Auftragsabwicklung und Kostenauswertung. Keine KI-Funktionen, Release-Stände oder
-  Kundenzahlen behaupten, solange sie nicht bestätigt sind.
+  Auftragsabwicklung und Kostenauswertung. Botschaft wie auf der Website: M-HIS bleibt
+  das führende System, KI setzt an den Vorgängen an, die darin liegen. Keine fertigen
+  KI-Funktionen in M-HIS, Release-Stände oder Kundenzahlen behaupten.
+- Kundennamen, Zahlen und Zitate aus internen Unterlagen (Konzepte, Protokolle) nur in
+  internen Videos, nie in Videos für Website, Social Media oder Kunden.
 
 ## Pflichtangaben
 
