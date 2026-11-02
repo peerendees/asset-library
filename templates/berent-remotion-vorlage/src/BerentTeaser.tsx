@@ -25,6 +25,11 @@ type Props = { musik: string; lautstaerke: number };
  * Beispiel-Teaser, 30 s, 16:9, 120 BPM = 15 Takte à 2 s.
  * Harte Schnitte auf dem Downbeat, Blitze nur an Wendepunkten.
  *
+ * ANSCHAUUNG FÜR DIE TECHNIK, KEINE SCHABLONE FÜR DEN AUFBAU. Die Szenenfolge
+ * unten gehört zu diesem einen Beispiel. Jedes neue Video bekommt eine eigene
+ * Erzählform aus seinem Inhalt (Skill `remotion`, „Aufbau“); Kapitelnummern
+ * wie „01“ nicht übernehmen.
+ *
  *  Takt  0–2  Hook          Wortwolke, Tippzeile, Sog ins Plus
  *  Takt  3–4  Titel         Einschlag + Farbblitz, Plus-Netz
  *  Takt  5–6  Frage         Kicker + Frage mit Akzentwort
@@ -82,7 +87,7 @@ export const BerentTeaser: React.FC<Props> = ({ musik, lautstaerke }) => {
         durationInFrames={takte(2, fps)}
       >
         <Frage
-          kicker="Frage 01"
+          kicker="Die Frage"
           frage="Wie viele Anrufe *verpasst* ihr pro Woche?"
         />
       </Sequence>

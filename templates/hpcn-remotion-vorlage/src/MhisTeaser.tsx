@@ -1,159 +1,45 @@
-import { Audio } from "@remotion/media";
+import type React from "react";
 import {
   AbsoluteFill,
+  Audio,
   interpolate,
   Sequence,
   staticFile,
   useVideoConfig,
 } from "remotion";
 import "./ci/schriften";
-import { farbe } from "./ci/tokens";
-import { takt, takte } from "./ci/takt";
+import { takt } from "./ci/takt";
 import { Blitz } from "./bausteine/Blitz";
-import { Hook } from "./szenen/Hook";
-import { Titel } from "./szenen/Titel";
-import { Frage } from "./szenen/Frage";
-import { Kapitel } from "./szenen/Kapitel";
-import { Prozess } from "./szenen/Prozess";
-import { Plattform } from "./szenen/Plattform";
-import { Aussage } from "./szenen/Aussage";
-import { Abspann } from "./szenen/Abspann";
+import { Anfrage } from "./szenen/Anfrage";
+import { Vorgaenge } from "./szenen/Vorgaenge";
+import { Schluss } from "./szenen/Schluss";
 
 type Props = { musik: string; lautstaerke: number };
 
 /**
- * M-HIS-Teaser im HPCN-CI, 30 s, 16:9, 112 BPM = 14 Takte à ≈ 2,14 s.
- * Harte Schnitte auf dem Downbeat, Blitze nur an Wendepunkten.
+ * M-HIS-Teaser, 30 s, 96 BPM (12 Takte à 2,5 s). Erzählform: ein Vorgang am
+ * Arbeitsplatz, dann dasselbe Prinzip auf alle Vorgänge, daraus das Signet.
  *
- *  Takt  0–2  Hook       Branchenwörter, Tippzeile, Sog ins Raster
- *  Takt  3–4  Titel      M-HIS schlägt ein, Farbblitz, Netzwerk
- *  Takt  5–6  Frage      Kicker + Frage mit Akzentwort
- *  Takt  7    Kapitel    Quadratrahmen, Geisterzahl
- *  Takt  8–9  Prozess    Lichtpunkt durch die Kette
- *  Takt 10    Plattform  IBM Power i
- *  Takt 11    Aussage    Markenblau-Vollfläche
- *  Takt 12–13 Abspann    Logo, Leistungen, Adresse, Ausblende
- *
- * Inhaltliche Grundlage (belegt): M-HIS = Modulares Handels-Informations-System
- * der HPCN, auf IBM Power i, für Baumaschinenhandel, Werkstätten, technischen
- * Handel und Vermietung; Auftragsabwicklung und Kostenauswertung.
- * Bewusst nicht behauptet: KI-Funktionen in M-HIS, aktuelle Release-Stände.
+ * Takt 0–1   Mietanfrage kommt per Mail
+ * Takt 2–3   KI liest die Angaben heraus, die M-HIS-Maske füllt sich
+ * Takt 4     Maschinenakte meldet einen Hinweis (Musik ohne Kick)
+ * Takt 5     F10: der Mensch bestätigt (Einschlag, Lichtblitz)
+ * Takt 6     „M-HIS bleibt das führende System.“
+ * Takt 7–9   Maske wird zur Kachel, vier Vorgänge im 2×2
+ * Takt 10–11 Kacheln werden zum Signet, Logo, Website-Zeile
  */
 export const MhisTeaser: React.FC<Props> = ({ musik, lautstaerke }) => {
   const { fps, durationInFrames } = useVideoConfig();
-
+  const T = (n: number) => takt(n, fps);
   return (
-    <AbsoluteFill style={{ backgroundColor: farbe.grund }}>
-      <Sequence
-        name="Hook"
-        from={takt(0, fps)}
-        durationInFrames={takte(3, fps)}
-      >
-        <Hook
-          zeile1="Vermieten. Reparieren. Verkaufen."
-          zeile2="Ein System."
-          woerter={[
-            "Mietvertrag",
-            "Werkstattauftrag",
-            "Ersatzteil",
-            "Kostenstelle",
-            "Maschinenakte",
-            "Rücknahme",
-            "Inventur",
-            "Wartung",
-            "Angebot",
-            "Lieferschein",
-            "Disposition",
-            "Stundenzettel",
-            "Excel-Liste",
-            "Rechnung",
-          ]}
-        />
-      </Sequence>
-      <Sequence
-        name="Titel"
-        from={takt(3, fps)}
-        durationInFrames={takte(2, fps)}
-      >
-        <Titel
-          produkt="M-HIS"
-          langname="Modulares Handels-Informations-System"
-          absender="von HPCN"
-        />
-      </Sequence>
-      <Sequence
-        name="Frage"
-        from={takt(5, fps)}
-        durationInFrames={takte(2, fps)}
-      >
-        <Frage
-          kicker="Frage 01"
-          frage="Was hat die Maschine *wirklich gekostet?*"
-        />
-      </Sequence>
-      <Sequence
-        name="Kapitel"
-        from={takt(7, fps)}
-        durationInFrames={takte(1, fps)}
-      >
-        <Kapitel nummer="01" titel="Durchgängig." />
-      </Sequence>
-      <Sequence
-        name="Prozess"
-        from={takt(8, fps)}
-        durationInFrames={takte(2, fps)}
-      >
-        <Prozess
-          aussage="Vom Auftrag *bis zur Auswertung.*"
-          schritte={[
-            { titel: "Anfrage", zeile: "Kunde meldet Bedarf" },
-            { titel: "Mietvertrag", zeile: "Maschine disponiert" },
-            { titel: "Werkstatt", zeile: "Wartung erfasst" },
-            { titel: "Auswertung", zeile: "Kosten je Maschine" },
-          ]}
-          fazit="Büro, Werkstatt und Vermietung in einem System."
-        />
-      </Sequence>
-      <Sequence
-        name="Plattform"
-        from={takt(10, fps)}
-        durationInFrames={takte(1, fps)}
-      >
-        <Plattform
-          kicker="Plattform"
-          plattform="IBM Power i"
-          zeile="Robuste Technik für den Mittelstand."
-        />
-      </Sequence>
-      <Sequence
-        name="Aussage"
-        from={takt(11, fps)}
-        durationInFrames={takte(1, fps)}
-      >
-        <Aussage zeile1="Ein System." zeile2="Ein Partner." />
-      </Sequence>
-      <Sequence
-        name="Abspann"
-        from={takt(12, fps)}
-        durationInFrames={durationInFrames - takt(12, fps)}
-      >
-        <Abspann
-          zeile="M-HIS von HPCN"
-          leistungen="IT-Consulting · KI-Beratung"
-          adresse="www.h-pcn.de"
-        />
-      </Sequence>
-      <Blitz bei={takt(3, fps)} art="licht" abklingen={14} staerke={0.8} />
-      <Blitz bei={takt(7, fps)} art="licht" abklingen={10} staerke={0.6} />
-      <Blitz bei={takt(12, fps)} art="licht" abklingen={14} staerke={0.6} />
+    <AbsoluteFill>
       <Audio
         src={staticFile(musik)}
         volume={(f) =>
-          lautstaerke *
           interpolate(
             f,
-            [0, 6, durationInFrames - 24, durationInFrames - 1],
-            [0, 1, 1, 0],
+            [0, 8, durationInFrames - 20, durationInFrames],
+            [0, lautstaerke, lautstaerke, 0],
             {
               extrapolateLeft: "clamp",
               extrapolateRight: "clamp",
@@ -161,6 +47,17 @@ export const MhisTeaser: React.FC<Props> = ({ musik, lautstaerke }) => {
           )
         }
       />
+      <Sequence durationInFrames={T(7)} name="Anfrage">
+        <Anfrage />
+      </Sequence>
+      <Sequence from={T(7)} durationInFrames={T(10) - T(7)} name="Vorgänge">
+        <Vorgaenge />
+      </Sequence>
+      <Sequence from={T(10)} name="Schluss">
+        <Schluss />
+      </Sequence>
+      <Blitz art="licht" bei={T(5)} abklingen={14} staerke={0.55} />
+      <Blitz art="kupfer" bei={T(10)} abklingen={16} staerke={0.5} />
     </AbsoluteFill>
   );
 };

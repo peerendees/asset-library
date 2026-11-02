@@ -10,7 +10,7 @@ import { farbe, schrift } from "../ci/tokens";
 import { puls } from "../ci/takt";
 
 type Props = {
-  /** Große Geisterzahl im Hintergrund, z. B. „01“. */
+  /** Große Zahl im Hintergrund – nur wenn die Zahl selbst Inhalt ist (z. B. „6.000“), nie als Kapitelnummer. */
   nummer?: string;
   start?: number;
 };

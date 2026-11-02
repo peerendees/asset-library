@@ -1,7 +1,7 @@
 import type React from "react";
 import { farbe, groesse, schrift, sperrung } from "../ci/tokens";
 
-/** Kleine Überzeile in JetBrains Mono, Versalien, weit gesperrt: „FRAGE 01“. */
+/** Kleine Überzeile in JetBrains Mono, Versalien, weit gesperrt, beschreibend, nie nummeriert (z. B. „VERMIETUNG“). */
 export const Kicker: React.FC<{
   children: React.ReactNode;
   farbeText?: string;

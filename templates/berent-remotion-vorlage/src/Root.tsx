@@ -59,7 +59,7 @@ export const RemotionRoot: React.FC = () => (
         durationInFrames={120}
         {...FORMAT}
         defaultProps={{
-          kicker: "Frage 01",
+          kicker: "Die Frage",
           frage: "Wie viele Anrufe *verpasst* ihr pro Woche?",
         }}
       />
