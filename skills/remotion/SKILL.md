@@ -112,7 +112,7 @@ dann nicht – die Regeln des jeweiligen CI ersetzen sie.
 
 Fertige Variante: **HPCN** (`templates/hpcn-remotion-vorlage`, lokal
 `/Users/Shared/Projekte/Entwicklung/Projekte/videoschnitt/hpcn-remotion-vorlage`,
-Skill `hpcn-ci`) – Inter statt Bebas, Markenblau statt Kupfer, 2×2-Raster statt Plus, 112 BPM.
+Skill `hpcn-ci`) – Inter statt Bebas, Markenblau statt Kupfer, 2×2-Raster statt Plus, ruhigeres Tempo.
 
 ## Aufbau: aus dem Inhalt, nie aus der Schablone
 
