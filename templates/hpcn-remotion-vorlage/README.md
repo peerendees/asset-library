@@ -23,7 +23,7 @@ npx remotion render MhisTeaser out/teaser.mp4 # erst nach Abnahme
 | Schrift | Bebas Neue, Instrument Sans | Inter 800/700/600, JetBrains Mono |
 | Markenzeichen | `PlusZeichen` | `Raster` (2×2 aus dem Logo) |
 | Netz | `PlusNetz` (Plus-Knoten) | `Netzwerk` (quadratische Knoten) |
-| Kapitelmarke | `PlusRahmen` | `Quadratrahmen` |
+| Rahmen-Übergang | `PlusRahmen` | `Quadratrahmen` |
 | Titel | Versalien | gemischte Schreibung |
 | Tempo | 120 BPM | ruhiger, je Video festgelegt |
 
@@ -68,7 +68,7 @@ Release-Stände, Kundenzahlen.
 
 ## Musik
 
-`public/musik/taktspur-96bpm.wav` ist selbst synthetisiert (Einschlag Takt 5, Pause Takt 4, Abspann Takt 10 – passend zum Storyboard) (Platzhalter, keine Samples).
+`public/musik/taktspur-96bpm.wav` ist selbst synthetisiert, ein Platzhalter ohne Samples: Pause Takt 4, Einschlag Takt 5, Abspann Takt 10, passend zum Storyboard.
 Für die Veröffentlichung ein lizenziertes Stück einsetzen und mit
 `python3 scripts/takt-analyse.py` Tempo und Downbeat in `src/ci/takt.ts` eintragen.
 
