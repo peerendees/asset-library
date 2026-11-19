@@ -1,7 +1,7 @@
 # Infrastructure Playbook — BERENT
 
 > Grundlagendokument für alle Entwicklungsprojekte: Infrastruktur, Tools, Workflows, Konventionen.
-> Stand: 2026-09-22 · v1.7 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
+> Stand: 2026-11-19 · v1.8 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `systems-register.md`
 
 ---
 
@@ -45,7 +45,9 @@
 
   ```bash
   mkdir -p ~/.claude/hooks
-  cp hooks/git-leitplanke.sh ~/.claude/hooks/ && chmod +x ~/.claude/hooks/git-leitplanke.sh
+  cp hooks/git-leitplanke.sh hooks/git-leitplanke-test.sh ~/.claude/hooks/
+  chmod +x ~/.claude/hooks/git-leitplanke.sh ~/.claude/hooks/git-leitplanke-test.sh
+  bash ~/.claude/hooks/git-leitplanke-test.sh   # muss mit „0 falsch" enden
   ```
 
   Dazu in `~/.claude/settings.json` unter `hooks.PreToolUse` ein Eintrag mit `matcher: "Bash"` und dem
@@ -55,13 +57,31 @@
   auf einem Feature-Zweig, das **Vorspulen von `main`** (`git pull --ff-only`, `git merge --ff-only
   origin/main`) nach einem Merge auf GitHub, und `git commit --dry-run`. Ein Mensch im Terminal ist
   nicht betroffen.
+  **Welcher Zweig zählt:** der, auf dem der Befehl tatsächlich läuft — nicht der des Haupt-Klons. Der
+  Hook wechselt zuerst in das Arbeitsverzeichnis der Sitzung (`.cwd` aus seiner Eingabe; die Desktop-App
+  legt Sitzungen als Worktree unter `<repo>/.claude/worktrees/<name>` an), folgt dann `cd <pfad>` im
+  Befehl und nimmt bei `git -C <pfad>` dieses Verzeichnis. Eine Worktree auf einem Feature-Zweig darf
+  also committen, auch wenn der Haupt-Klon auf `main` steht — und umgekehrt nicht. Lässt sich ein Pfad
+  nicht auflösen, gilt das Verzeichnis des Hook-Prozesses. Die Ablehnung nennt Zweig und Verzeichnis des
+  abgewiesenen Commits.
+  **Pushen:** Gesperrt ist ein Push, dessen *Ziel* `main`/`master` ist (`origin main`, `HEAD:main`,
+  `+main`, `:main`, `--delete main`) oder ein schlichtes `git push` auf `main`. Erlaubt ist von `main`
+  aus `git push origin <zweig>` und `git push origin --delete <zweig>`. Ein Ziel aus einer Variablen
+  (`"$b"`) ist nicht prüfbar und wird verweigert — Zweige ausdrücklich nennen. Schlüsselwörter vor
+  `git` (`do git commit`, `then git push`) verstecken den Aufruf nicht mehr.
+  Die Prüffälle (`hooks/git-leitplanke-test.sh`) prüfen jeden dieser Fälle in Wegwerf-Repos; nach
+  jeder Änderung am Hook laufen lassen, für eine andere Fassung mit `HOOK=<pfad>`.
   *(Beleg: Am 22.09.2026 landete ein Doku-Nachtrag trotz dreier schriftlicher Regeln direkt auf `main`.
   Eine Regel, die niemand durchsetzt, ist eine Bitte. Zweiter Beleg aus derselben Sitzung: Die erste
   Fassung des Hooks las die ganze Befehlszeile und hielt eine Tabellenzeile ueber Force-Push in einem
   Pull-Request-Rumpf fuer einen Force-Push — ein Waechter muss Befehle von Text unterscheiden. Dritter
   Beleg, Stunden spaeter: Dieselbe Fassung verweigerte das Vorspulen von `main` nach einem Merge auf
   GitHub. **Ein Waechter, der die richtige Bewegung blockiert, wird umgangen** — deshalb ist jede
-  Blockade hier eng gefasst und nennt den erlaubten Weg.)*
+  Blockade hier eng gefasst und nennt den erlaubten Weg. Drei spätere Belege, alle derselben Art — der
+  Hook prüfte einen anderen Zweig als den, auf dem gearbeitet wurde: 30.09.2026 berent-ki-team-orga
+  (`cd <worktree> && git commit` gegen `main` des Haupt-Klons geprüft), 10.10.2026 fedor-seo
+  (`git push origin --delete <zweig>` als Push nach `main` verweigert, `for … do git commit` gar nicht
+  gesehen), 22.10.2026 belegchat (App-Worktree auf Feature-Zweig abgewiesen, behoben 19.11.2026).)*
 - **Ein gestapelter Pull Request stirbt mit seinem Basiszweig.** Steht PR B auf dem Zweig von PR A,
   schliesst GitHub B stillschweigend, sobald A gemergt und sein Zweig geloescht wird. Vorher die Basis von
   B auf `main` umstellen (`gh pr edit <nr> --base main`) oder B danach neu eroeffnen.
