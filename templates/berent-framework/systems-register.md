@@ -1,7 +1,7 @@
 # Systems & Integrations Register — BERENT
 
 > Verzeichnis aller Systeme, ihrer Verbindungen und **aller Secret-Speicherorte**.
-> Stand: 2026-09-21 · v1.14 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
+> Stand: 2026-11-23 · v1.15 · Schwester-Dokumente: `ENGINEERING-PRINCIPLES.md` · `infrastructure-playbook.md`
 > Pflegeregel: Jede neue Integration und jedes neue Secret wird HIER eingetragen, bevor sie live geht.
 >
 > **SSoT ist diese Datei in `asset-library/templates/berent-framework/` — NUR hier pflegen.**
@@ -124,6 +124,11 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
   (Express, SQLite auf Volume `/app/data`, Cockpit `/admin`). Bis zur Umschaltung traegt die Static-Anwendung
   `berent.ai:main-…` weiter `berent.ai` und `www.berent.ai`; der Umzug ist ein Wechsel der Host-Regel
   (`docs/betrieb/umschaltung-www.md` im Repo). Env-Labels siehe Secret-Verzeichnis.
+- **`tool-explosion`** (seit 23.11.2026) -> `tool-explosion.berent.ai`: Recherche-Cockpit mit Sitzungen,
+  Präsentation, Video und Landingpage (Node/TypeScript, Express, Dockerfile, Port 3000). Eigene
+  Postgres-Ressource `tool-explosion-db` im Projekt „BERENT AI Projekte“, nur im Coolify-Netz erreichbar.
+  Anmeldung per Passkey (Relying Party `tool-explosion.berent.ai`). Läuft im Fixture-Modus ohne
+  KI-Schlüssel. Env-Labels siehe Secret-Verzeichnis.
 
 ## SECRET-VERZEICHNIS — ein Label, alle Speicherorte
 
@@ -158,6 +163,9 @@ Threema (*BERENTB) ──idee──▶ Skill Executor ──GitHub-Commit──�
 | `SESSION_SECRET` (berentai-nativ) | ① Coolify-Env ② Passwortmanager (gleicher Eintrag) ③ lokal `.env` (Eigenwert) | signiert die Sitzungs-Cookies des Cockpits; ein Wechsel meldet alle ab |
 | `ANTHROPIC_API_KEY` (berentai-nativ, optional) | ① Coolify-Env ② Anthropic Console (Quelle) | Generator (Stufe 4). Ohne Wert ist der Generator abgeschaltet, alles andere laeuft |
 | `FORM_WEBHOOK_URL` (kein Geheimnis, aber ein Schalter — deshalb hier) | ① Coolify-Env · Wert = n8n-Webhook fuer Anfragen | Benachrichtigung bei neuen Anfragen; ohne Wert nur Speicherung in der Tabelle `submissions`. **Zuerst speichern, dann melden** — ein Ausfall verliert nichts |
+| `DATABASE_URL` + Postgres-Passwort (tool-explosion) | ① Coolify-Env der Anwendung `tool-explosion` ② Coolify-Ressource `tool-explosion-db` (Quelle, dort auch das Passwort) | App-Datenbank; Migrationen laufen beim Start. Nur im Docker-Netz `coolify`, kein öffentlicher Port. Eingetragen 23.11.2026, vor dem Anlegen in Coolify |
+| `SESSION_SECRET` (tool-explosion) | ① Coolify-Env der Anwendung `tool-explosion` ② Passwortmanager „Tool Explosion“ (trägt Marcus nach) | signiert die Sitzungs-Cookies; ein Wechsel meldet alle ab |
+| `SETUP_CODE` (tool-explosion, einmalig) | ① Coolify-Env der Anwendung `tool-explosion` | erster Zugang `/einrichtung` (erster Passkey). Wirkt nur, solange es kein Konto gibt; danach aus der Env löschen |
 | Anthropic API Key | n8n-Credential „Anthropic API" | Executor, Durchsicht |
 | `BEIRAT_ANTHROPIC_KEY` (EIGENER Anthropic-Key, Kostentrennung) | n8n-Container-Env + Passwortmanager | Beirat-Orchestrator (`$env`) |
 | `BEIRAT_VAULT_TOKEN` (GitHub PAT, contents:write nur auf berent-2nd-brain) | n8n-Container-Env + Passwortmanager | Beirat-Vault-Export · Skill Executor/`donna/idee` (bevorzugt, da nachweislich gültig) |
@@ -245,3 +253,4 @@ Vault `01 Inbox/Mail-Extrakte/` (`scripts/export-extrakte.mjs`).
 | 2026-08-11 | v1.12 — `N8N_BASE_URL` aufgenommen (ORGA-129): war seit dem Beirat produktiv in Gebrauch, stand aber in keinem Verzeichnis — wer sie suchte, fand sie nicht. Anlass war die Schaltflaeche „Naechster Schwung“ in NR7, die als dritter Konsument dazukam. Kein neuer Wert, nur die fehlende Zeile. |
 | 2026-08-25 | v1.13 — **A11 Coolify** aufgenommen: laeuft auf `srv1098810`, derselben Maschine wie n8n; Proxy gehoert nicht Coolify (`exposedbydefault=false`), Container ohne Labels sind unsichtbar. Dazu der SSH-Schluessel `id_ed25519_coolify` ins Verzeichnis. Beides fehlte seit dem Website-Umzug 07/2026 — 21 Hosts gingen live, ohne dass die Instanz irgendwo verzeichnet war. |
 | 2026-09-21 | v1.14 — **A11 ergaenzt:** Dockerfile-Anwendung `berentai-nativ` (`nativ.berent.ai`, spaeter `www`) und vier Env-Labels im Secret-Verzeichnis (`ADMIN_PASSWORD`, `SESSION_SECRET`, `ANTHROPIC_API_KEY`, `FORM_WEBHOOK_URL`) — **vor** dem Anlegen in Coolify eingetragen (Anleitung Punkt 4). Anlass: Bau des Website-Motors, Nachbau von www.berent.ai. |
+| 2026-11-23 | v1.15 — **A11 ergaenzt:** Dockerfile-Anwendung `tool-explosion` (`tool-explosion.berent.ai`) mit eigener Postgres-Ressource und drei Env-Labels (`DATABASE_URL`, `SESSION_SECRET`, `SETUP_CODE`) — **vor** dem Anlegen in Coolify eingetragen. Anlass: Sitzung KIM-2026-11-23 der Tool Explosion. |
